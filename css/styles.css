@@ -1,0 +1,63 @@
+* {
+    font-family: Arial;
+    font-weight: normal;
+    font-size: 14px;
+}
+
+code {
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace
+},
+
+h1 {
+    font-size: 22px;
+}
+
+h2 {
+    font-size: 18px;
+}
+
+input[type=text] {
+    display: inline-block;
+    border: 3px solid #CCC;
+}
+
+input.val-warning {
+    border-color: #069;
+}
+
+input.val-error {
+    border-color: #C00;
+}
+
+input:read-only {
+    background: #DDD;
+}
+
+label {
+    display: block;
+    padding: 3px;
+}
+
+span.label {
+    display: inline-block;
+    width: 50px;
+}
+
+.hidden {
+    display: none;
+}
+
+.row3 {
+    float: left;
+    width: 33.3%;
+}
+
+.selected {
+    background: #EEE;
+}
+
+.validation {
+    display: inline-block;
+    margin: 0;
+    vertical-align: text-top;
+}

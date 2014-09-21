@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Arquitectura</title>
+        <script data-main="js/appManager" src="js/libs/require.js"></script>
+        <link rel="stylesheet" type="text/css" media="all" href="css/styles.css" />
+    </head>
+    <body>
+        <div id="app"></div>
+        <div data-js-templates>
+            <script type="text/template" id="app-view">
+                <header region="header" />
+                <div region="cont" />
+                <footer region="footer" />
+            </script>
+            <script type="text/template" id="header-view">
+                <h1>Definition</h1>
+            </script>
+            <script type="text/template" id="cont-view">
+                <div class="row3">
+                    <h2 js='contenteditable'>Form</h2>
+                    <form js="form">
+                        <label js="label-user">
+                            <span class="label">User:</span>
+                            <input js="user" js-validation-mirror="user" type="text" />
+                            <ul js-validation="user" class="validation" />
+                        </label>
+                        <label js="label-name">
+                            <span class="label">Name:</span>
+                            <input js="name" type="text" />
+                            <ul js-validation="name" class="validation" />
+                        </label>
+                        <label js="label-mail">
+                            <span class="label">Mail:</span>
+                            <input js="mail" type="text" />
+                            <ul js-validation="mail" class="validation" />
+                        </label>
+                        <label js="label-age">
+                            <span class="label">Age:</span>
+                            <input js="age" type="text" />
+                            <ul js-validation="age" class="validation" />
+                        </label>
+                        <input js="submit" type="submit" />
+                    </form>
+                    <div region="subCont" />
+                </div>
+            </script>
+            <script type="text/template" id="sub-cont-view">
+                <p>Click me for autocomplete</p>
+                <code js="code"></code>
+            </script>
+        </div>
+    </body>
+</html>
