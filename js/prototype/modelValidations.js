@@ -14,6 +14,7 @@ define(['utils'], function (utils) {
         setModelValueIntoValidation = function (validation, customValue) {
             var method = this[validation.parseMethod],
                 value = customValue || this.get(validation.attr);
+            //TODO: parsear antes de validar con la propiedad validation.parse
             validation.value = _.isFunction(method) ? method.call(this, value) : value;
         },
 
@@ -35,7 +36,7 @@ define(['utils'], function (utils) {
         //validate method to be run by backbone model isValid method
         validate: function (attr, value) {
             return _.reduce(this.getValidations(attr, value), function (isValid, validation) {
-                return !isValid || !validation.isValid;
+                return isValid && validation.isValid;
             }, true);
         },
 
