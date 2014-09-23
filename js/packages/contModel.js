@@ -6,7 +6,7 @@ define(['utils'], function (utils) {
 
         _defaults: { //default backbone attributes
             age: '',
-            level: 0,
+            level: 50,
             mail: '',
             name: '',
             user: ''
@@ -19,7 +19,7 @@ define(['utils'], function (utils) {
             },
             level: {
                 parse: 'parseInt',
-                defaultValue: 5
+                defaultValue: 50
             }
         },
 
@@ -65,7 +65,7 @@ define(['utils'], function (utils) {
                 attr: 'level',
                 not: true,
                 method: 'isSmallerOrEqualThan',
-                methodParams: 10,
+                methodParams: 100,
                 parse: 'parseInt'
             },
             {
