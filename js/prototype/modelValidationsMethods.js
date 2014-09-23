@@ -32,7 +32,7 @@ define(['utils'], function (utils) {
             return validation.value <= validation.methodParams;
         },
 
-        //regex,
+        //regex
 
         regex: function (validation) {
             return regexs[validation.regex].test(validation.value);
