@@ -13,10 +13,17 @@ define(['utils'], function (utils) {
 
         setModelValueIntoValidation = function (validation, customValue) {
             var method = this[validation.parseMethod],
-                value = customValue || this.get(validation.attr);
-            //TODO: parsear antes de validar con la propiedad validation.parse
+                value = parseValueBeforeValidation.call(this, validation, customValue);
             validation.value = _.isFunction(method) ? method.call(this, value) : value;
         },
+
+        parseValueBeforeValidation = function (validation, customValue) {
+            var value = customValue || this.get(validation.attr);
+            if (validation.parse === 'parseInt') {
+                return parseInt(value, 10);
+            }
+            return value;
+        };
 
         getMethodResult = function (validation) {
             var result = this[validation.method].call(this, validation);

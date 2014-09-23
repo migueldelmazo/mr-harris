@@ -2,7 +2,8 @@ define(['utils'], function (utils) {
 
     //set model helpers
 
-    var parseBeforeSet = function (attr, value) {
+    var //parse value before set
+        parseBeforeSet = function (attr, value) {
             _.each(utils.foo(this, '_parseBeforeSet'), function (parse, parseAttr) {
                 if (parseAttr === attr) {
                     if (parse.parse === 'parseInt') {
@@ -13,13 +14,13 @@ define(['utils'], function (utils) {
             return value;
         },
 
+        //check if attr is in _validateBeforeSet and valida
         validateBeforeSet = function (attr, value) {
-            //if (this.validate(attr, value))
-            //coger las validaciones
-            //ver si hay que validar
-            //llamar a getValidations pasandole solo este attributo
-            //llamar a validate
-            return true;
+            if (_.isString(attr) && utils.parseArray(this._validateBeforeSet).indexOf(attr) >= 0) {
+                return this.validate(attr, value);
+            } else {
+                return true;
+            }
         },
 
         constructorModel = Backbone.Model;
@@ -27,8 +28,8 @@ define(['utils'], function (utils) {
     //overwrite set method
 
     Backbone.Model.prototype.set = _.wrap(Backbone.Model.prototype.set, function (setFunc, attr, value, options) {
-        value = _.isString(attr) ? parseBeforeSet.call(this, attr, value) : value; //parse value
         if (validateBeforeSet.call(this, attr, value)) {
+            value = _.isString(attr) ? parseBeforeSet.call(this, attr, value) : value; //parse value
             setFunc.call(this, attr, value, options); //Backbone.Model set
         }
         //if value is equal than previous value, Backbone doesn't trigger change:attr. We always trigger set:attr

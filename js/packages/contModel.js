@@ -6,8 +6,9 @@ define(['utils'], function (utils) {
 
         _defaults: { //default backbone attributes
             age: '',
-            name: '',
+            level: 0,
             mail: '',
+            name: '',
             user: ''
         },
 
@@ -15,10 +16,14 @@ define(['utils'], function (utils) {
             age: {
                 parse: 'parseInt',
                 defaultValue: 18
+            },
+            level: {
+                parse: 'parseInt',
+                defaultValue: 5
             }
         },
 
-        _validateBeforeSet: ['age'], //TODO
+        _validateBeforeSet: ['level'],
 
         _modelEvents: { //model events actions
             /*'change:user': [
@@ -34,9 +39,9 @@ define(['utils'], function (utils) {
                 method: 'isEmpty',
                 msg: 'empty field'
             },
-            {   //if user is equal admin warning = true, msg = warning
+            {   //if user is equal than admin warning = true, msg = warning
                 attr: 'user',
-                isValid: true,
+                isValid: true, //if user is equal than admin we show message but the validation passed
                 method: 'isEqual',
                 methodParams: 'admin',
                 msg: 'are you sure?',
@@ -46,8 +51,28 @@ define(['utils'], function (utils) {
                 attr: 'mail',
                 method: 'regex',
                 not: true,
-                regex: 'email',
+                regex: 'isEmail',
                 msg: 'invalid email'
+            },
+            {   //if lavel is great or equal than 0, error = true
+                attr: 'level',
+                not: true,
+                method: 'isGreatOrEqualThan',
+                methodParams: 0,
+                parse: 'parseInt'
+            },
+            {   //if lavel is smaller than 10, error = true
+                attr: 'level',
+                not: true,
+                method: 'isSmallerOrEqualThan',
+                methodParams: 10,
+                parse: 'parseInt'
+            },
+            {
+                attr: 'level',
+                not: true,
+                method: 'isNumber',
+                parse: 'parseInt'
             }
         ],
 

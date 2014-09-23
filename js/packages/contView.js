@@ -21,7 +21,7 @@ define([
                 view: subContView,
                 listenToView: { //listening triggers of this view
                     autocomplete: [
-                        { action: 'set', to: 'model', toItem: 'user', value: 'elenita' },
+                        { action: 'set', to: 'model', toItem: 'user', value: 'usuario' },
                         { action: 'set', to: 'model', toItem: 'name', value: 'nombre' },
                         { action: 'set', to: 'model', toItem: 'mail', value: 'mail@mail.org' },
                         { action: 'set', to: 'model', toItem: 'age', value: '20' },
@@ -39,7 +39,7 @@ define([
         _model: contModel, //model of view
 
         _modelBinds: [ //items bind between model and dom
-            { model: 'user', dom: 'user' }, 'name', 'mail', 'age'
+            { model: 'user', dom: 'user' }, 'name', 'mail', 'age', 'level'
         ],
 
         _domEvents: { //dom events actions
@@ -72,11 +72,13 @@ define([
             ],
             'set:user': [
                 { action: 'toggle', el: ['label-mail', 'label-age'], from: 'model', fromItem: 'user' },
-                { action: 'toggleClass', from: 'model', fromItem: 'user', to: 'dom', el: 'label-user', className: 'selected' },
-                { action: 'toggleProperty', from: 'model', fromItem: 'user', to: 'dom', el: 'submit', property: 'disabled' }
+                { action: 'toggleClass', from: 'model', fromItem: 'user', to: 'dom', el: 'label-user', className: 'selected' }
             ],
             'change:user': [
                 { action: 'createReport', value: 'contView: set user' }
+            ],
+            'change': [
+                { action: 'toggleProperty', from: 'model', fromFn: 'validate', to: 'dom', el: 'submit', property: 'disabled' }
             ]
         },
 
