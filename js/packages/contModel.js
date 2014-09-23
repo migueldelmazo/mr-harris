@@ -41,11 +41,11 @@ define(['utils'], function (utils) {
             },
             {   //if user is equal than admin warning = true, msg = warning
                 attr: 'user',
-                isValid: true, //if user is equal than admin we show message but the validation passed
                 method: 'isEqual',
                 methodParams: 'admin',
                 msg: 'are you sure?',
-                type: 'warning'
+                type: 'warning',
+                isValid: true //if user is equal than admin we show message but the validation passed
             },
             {   //if mail is invalid, error = true, msg = empty field
                 attr: 'mail',
@@ -54,21 +54,19 @@ define(['utils'], function (utils) {
                 regex: 'isEmail',
                 msg: 'invalid email'
             },
-            {   //if lavel is great or equal than 0, error = true
+            {   //if level is great than 100, error = true
                 attr: 'level',
-                not: true,
-                method: 'isGreatOrEqualThan',
-                methodParams: 0,
-                parse: 'parseInt'
-            },
-            {   //if lavel is smaller than 10, error = true
-                attr: 'level',
-                not: true,
-                method: 'isSmallerOrEqualThan',
+                method: 'isGreatThan',
                 methodParams: 100,
                 parse: 'parseInt'
             },
-            {
+            {   //if level is smaller than 0, error = true
+                attr: 'level',
+                method: 'isSmallerThan',
+                methodParams: 0,
+                parse: 'parseInt'
+            },
+            {   //if level is not a number, error = true
                 attr: 'level',
                 not: true,
                 method: 'isNumber',
