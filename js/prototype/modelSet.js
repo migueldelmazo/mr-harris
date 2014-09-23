@@ -7,7 +7,7 @@ define(['utils'], function (utils) {
             _.each(utils.foo(this, '_parseBeforeSet'), function (parse, parseAttr) {
                 if (parseAttr === attr) {
                     if (parse.parse === 'parseInt') {
-                        value = parseInt(value, 10) || parse.defaultValue || 0;
+                        value = utils.parseInt(value, parse.defaultValue);
                     }
                 }
             }, this);
