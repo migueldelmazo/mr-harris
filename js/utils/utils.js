@@ -91,6 +91,12 @@ define([
                 return array;
             },
 
+            //parse integer or set default value
+            parseInt: function (value, defaultValue) {
+                var parsedValue = parseInt(value, 10);
+                return parsedValue + '' === value ? parsedValue : defaultValue || 0;
+            },
+
             //temporal development method
             storeInWindow: function (type, obj) {
                 window['z_' + type + '_' + (obj._name || '')] = obj;
