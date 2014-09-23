@@ -1,5 +1,7 @@
 define(['utils'], function (utils) {
 
+    //end to end test for contView and contModel
+
     return {
 
         actions: [
@@ -18,7 +20,6 @@ define(['utils'], function (utils) {
                             expect(viewEl.find('[js=label-user]').hasClass('selected')).toBe(false);
                             expect(viewEl.find('[js=label-mail]').hasClass('hidden')).toBe(true);
                             expect(viewEl.find('[js=label-age]').hasClass('hidden')).toBe(true);
-                            expect(viewEl.find('[js=submit]').prop('disabled')).toBe(true);
                         });
                     });
                 }
@@ -46,7 +47,6 @@ define(['utils'], function (utils) {
                             expect(viewEl.find('[js-validation=user]').hasClass('val-success')).toBe(false);
                             expect(viewEl.find('[js-validation=user]').text()).toBe('');
                             expect(viewEl.find('[js=label-user]').hasClass('selected')).toBe(true);
-                            expect(viewEl.find('[js=submit]').prop('disabled')).toBe(false);
                         });
                     });
                 }
@@ -69,10 +69,10 @@ define(['utils'], function (utils) {
             {
                 test: function () {
                     describe('View and Model bindings', function() {
-                        it('Success in name: my name', function() {
+                        it('Success in name: nombre', function() {
                             var viewEl = this.test.findView$El('contView'),
                                 model = this.test.findModel('contView');
-                            viewEl.find('[js=name]').val('my name').trigger('keyup');
+                            viewEl.find('[js=name]').val('nombre').trigger('keyup');
                             expect(viewEl.find('[js=name]').val()).toBe(model.get('name'));
                         });
                     });
@@ -97,12 +97,24 @@ define(['utils'], function (utils) {
                             var viewEl = this.test.findView$El('contView');
                             viewEl.find('[js=age]').val('my age').trigger('keyup');
                             expect(viewEl.find('[js=age]').val()).toBe('18');
-                            viewEl.find('[js=age]').val('19').trigger('keyup');
-                            expect(viewEl.find('[js=age]').val()).toBe('19');
+                            viewEl.find('[js=age]').val('20').trigger('keyup');
+                            expect(viewEl.find('[js=age]').val()).toBe('20');
+                        });
+                    });
+                }
+            },
+            {
+                test: function () {
+                    describe('View and Model validations', function() {
+                        it('Validate model: true', function() {
+                            var model = this.test.findModel('contView');
+                            expect(model.validate()).toBe(true);
                         });
                     });
                 }
             }
+
+
         ]
     };
 });
