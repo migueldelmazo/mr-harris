@@ -23,7 +23,7 @@ define(['utils'], function (utils) {
                 if (action.waitEvent) {
                     this.app.appEventOnce(action.waitEvent, this._runAction, this);
                 } else {
-                    setTimeout(this._runAction.bind(this), action.wait || 500);
+                    setTimeout(this._runAction.bind(this), action.wait || 100);
                 }
             }
         },
