@@ -3,7 +3,7 @@ define(['utils'], function (utils) {
     //default regular expressions
 
     var regexs = {
-            email: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            isEmail: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         };
 
     //model validations helpers
@@ -18,6 +18,18 @@ define(['utils'], function (utils) {
 
         isEqual: function (validation) {
             return _.isEqual(validation.value, validation.methodParams);
+        },
+
+        isNumber: function (validation) {
+            return !isNaN(validation.value);
+        },
+
+        isGreatOrEqualThan: function (validation) {
+            return validation.value >= validation.methodParams;
+        },
+
+        isSmallerOrEqualThan: function (validation) {
+            return validation.value <= validation.methodParams;
         },
 
         //regex,
