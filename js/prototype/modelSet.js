@@ -4,7 +4,7 @@ define(['utils'], function (utils) {
 
     var //parse value before set
         parseBeforeSet = function (attr, value) {
-            _.each(utils.foo(this, '_parseBeforeSet'), function (parse, parseAttr) {
+            _.each(this._parseBeforeSet, function (parse, parseAttr) {
                 if (parseAttr === attr) {
                     if (parse.parse === 'parseInt') {
                         value = utils.parseInt(value, parse.defaultValue);

@@ -62,7 +62,7 @@ define(['utils'], function (utils) {
         _initRegions: function () {
             var regions = {};
             if (this instanceof Marionette.LayoutView) {
-                _.each(utils.foo(this, '_regions'), function (selector, region) {
+                _.each(this._regions, function (selector, region) {
                     regions[region] = '[region=' + selector + ']';
                 });
                 this.regions = regions;

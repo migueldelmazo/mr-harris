@@ -3,7 +3,7 @@ define(['utils'], function (utils) {
     var //view and model binds
 
         setBindings = function () {
-            _.each(utils.foo(this, '_modelBinds'), function (item) {
+            _.each(this._modelBinds, function (item) {
                 item = _.isString(item) ? { model: item, dom: item } : item;
                 setBindingsInModel.call(this, item);
                 setBindingsInDom.call(this, item);
@@ -34,7 +34,7 @@ define(['utils'], function (utils) {
         //manage model events to view
 
         initModelEvents = function () {
-            _.each(utils.foo(this, '_modelEvents'), function (actions, ev) {
+            _.each(this._modelEvents, function (actions, ev) {
                 this._modelInstance.on(ev, onModelEvents.bind(this, actions, ev));
             }, this)
         },

@@ -11,7 +11,7 @@ define(['utils'], function (utils) {
         },
 
         initModelEvents = function () {
-            _.each(utils.foo(this, '_modelEvents'), function (actions, eventName) {
+            _.each(this._modelEvents, function (actions, eventName) {
                 this.on(eventName, onModelEvents.bind(this, actions));
             }, this);
         },

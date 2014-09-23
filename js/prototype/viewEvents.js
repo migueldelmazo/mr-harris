@@ -4,7 +4,7 @@ define(['utils'], function (utils) {
 
         listenDomEvents = function () {
             var events = {};
-            _.each(utils.foo(this, '_domEvents'), function (actions, selector) {
+            _.each(this._domEvents, function (actions, selector) {
                 events[selector] = onDomEvent.bind(this, actions);
             }, this);
             this.events = events; //set _domEvents in backbone attribute
@@ -19,7 +19,7 @@ define(['utils'], function (utils) {
         //app events
 
         listenAppEvents = function () {
-            _.each(utils.foo(this, '_appEvents'), function (actions, eventName) {
+            _.each(this._appEvents, function (actions, eventName) {
                 this.listenTo(this.app.vent, eventName, onAppEvent.bind(this, actions));
             }, this);
         },

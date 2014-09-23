@@ -13,7 +13,7 @@ define(['utils'], function (utils) {
         },
 
         clearIntervals: function () {
-            _.each(utils.foo(this, '_intervalsIds'), clearInterval.bind(window));
+            _.each(this._intervalsIds, clearInterval.bind(window));
         },
 
         setTimeout: function(callback, time) {
@@ -23,7 +23,7 @@ define(['utils'], function (utils) {
         },
 
         clearTimeouts: function () {
-            _.each(utils.foo(this, '_timeoutIds'), clearTimeout.bind(window));
+            _.each(this.timeoutIds, clearTimeout.bind(window));
         }
 
     });

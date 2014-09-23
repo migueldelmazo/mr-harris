@@ -10,7 +10,7 @@ define(['utils'], function (utils) {
 
         //recursively method
         runChildViewsMethod = function (method, data, options, _isTriggerView) {
-            _.each(utils.foo(this, 'getRegions'), function (region) {
+            _.each(this.getRegions, function (region) {
                 var currentView = region.currentView;
                 if (currentView) {
                     currentView.runViewsMethod(method, data, options, _isTriggerView);
