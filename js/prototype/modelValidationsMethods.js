@@ -24,12 +24,12 @@ define(['utils'], function (utils) {
             return !isNaN(validation.value);
         },
 
-        isGreatOrEqualThan: function (validation) {
-            return validation.value >= validation.methodParams;
+        isGreatThan: function (validation) {
+            return validation.value > validation.methodParams;
         },
 
-        isSmallerOrEqualThan: function (validation) {
-            return validation.value <= validation.methodParams;
+        isSmallerThan: function (validation) {
+            return validation.value < validation.methodParams;
         },
 
         //regex
