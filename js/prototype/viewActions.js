@@ -7,7 +7,7 @@ define(['utils'], function (utils) {
                 case 'dom':
                     return utils.dom.getValue(this.get$ElByAttr(action.fromItem));
                 case 'model':
-                    return action.fromFn ? this._modelInstance[action.fromFn]() : this._modelInstance.get(action.fromItem);
+                    return action.fromFn ? this._modelInstance[action.fromFn]() : utils.foo(this._modelInstance.toJSON(), action.fromItem);
                 case 'view':
                     return utils.foo(this, action.fromItem, undefined, action);
                 default:
@@ -65,7 +65,7 @@ define(['utils'], function (utils) {
         getElByAttr: function (els, attr) {
             attr = attr || 'js';
             return _.map(utils.parseArray(els), function (item) {
-                return '[' + attr + '='+ item + ']';
+                return '[' + attr + '="'+ item + '"]';
             }).join(',');
         },
 
