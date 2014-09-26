@@ -6,10 +6,13 @@ define(['utils'], function (utils) {
 
         _defaults: { //default backbone attributes
             age: '',
-            level: 50,
             mail: '',
             name: '',
-            user: ''
+            user: '',
+            level: {
+                level: 0,
+                category: 1
+            }
         },
 
         _parseBeforeSet: { //parse value before set in model
@@ -53,8 +56,9 @@ define(['utils'], function (utils) {
                 not: true,
                 regex: 'isEmail',
                 msg: 'invalid email'
-            },
-            {   //if level is great than 100, error = true
+            }/*,
+            {   //TODO
+                //if level is great than 100, error = true
                 attr: 'level',
                 method: 'isGreatThan',
                 methodParams: 100,
@@ -71,7 +75,7 @@ define(['utils'], function (utils) {
                 not: true,
                 method: 'isNumber',
                 parse: 'parseInt'
-            }
+            }*/
         ],
 
         submit: function () {

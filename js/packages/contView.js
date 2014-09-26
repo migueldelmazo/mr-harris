@@ -39,11 +39,11 @@ define([
         _model: contModel, //model of view
 
         _modelBinds: [ //items bind between model and dom
-            { model: 'user', dom: 'user' }, 'name', 'mail', 'age', 'level'
+            { model: 'user', dom: 'user' }, 'name', 'mail', 'age', 'level.level'
         ],
 
         _domEvents: { //dom events actions
-            'keyup [js=user]': [
+            'keyup [js="user"]': [
                 { action: 'set', from: 'dom', to: 'model', fromItem: 'user', toItem: 'user' },
                 { action: 'activateModelValidations', attrs: 'user' },
                 { action: 'showModelValidations' },
@@ -54,13 +54,16 @@ define([
                 { action: 'updateChild', viewName: 'subContView', from: 'model', fromFn: 'toJSON' },
                 { action: 'createReport', value: 'contView: keyup user' }
             ],
-            'keyup [js=mail]': [
+            'keyup [js="mail"]': [
                 { action: 'activateAndShowModelValidations', attrs: 'mail' }
             ],
-            'submit [js=form]': [
+            'keyup [js="level.level"]': [
+                //{ action: 'set', from: 'dom', to: 'model', fromItem: 'level.level', toItem: 'level.level' }
+            ],
+            'submit [js="form"]': [
                 { action: 'runModelMethod', method: 'submit' }
             ],
-            'click [js=submit]': [
+            'click [js="submit"]': [
                 { action: 'runModelMethod', method: 'submit' },
                 { action: 'triggerToApp', ev: 'submit' }
             ]
@@ -77,7 +80,7 @@ define([
             'change:user': [
                 { action: 'createReport', value: 'contView: set user' }
             ],
-            'change': [
+            'set:level.level': [
                 { action: 'toggleProperty', from: 'model', fromFn: 'validate', to: 'dom', el: 'submit', property: 'disabled' }
             ]
         },
