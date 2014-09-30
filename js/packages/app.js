@@ -1,6 +1,7 @@
 define([
     'utils',
     'packages/appConfig',
+    'packages/appRouter',
     'packages/appView',
     'prototype/application',
     'prototype/applicationEvents',
@@ -20,7 +21,7 @@ define([
     'prototype/viewOverwrite',
     'prototype/viewRegions',
     'prototype/viewUtils'
-], function (utils, appConfig, appView) {
+], function (utils, appConfig, appRouter, appView) {
 
     var //set config mixing app and user config
         setConfig = function (requireConfig) {
@@ -30,6 +31,7 @@ define([
 
         //create and store own classes
         createOwnClasses = function () {
+            utils.classes.create('appRouter', Marionette.AppRouter);
             utils.classes.create('itemView', Marionette.ItemView);
             utils.classes.create('layout', Marionette.LayoutView);
             utils.classes.create('model', Backbone.Model);
@@ -38,7 +40,10 @@ define([
         //require test and instance application
         initApp = function () {
             utils.tests.requireTestFiles().done(function () {
-                window.z_app = new Marionette.Application({ appView: appView });
+                window.z_app = new Marionette.Application({
+                    appView: appView,
+                    appRouter: appRouter
+                });
             });
         };
 
