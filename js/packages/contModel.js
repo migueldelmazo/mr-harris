@@ -9,6 +9,7 @@ define(['utils'], function (utils) {
             mail: '',
             name: '',
             user: '',
+            userMirror: '',
             level: {
                 level: 0,
                 category: 1
@@ -29,11 +30,9 @@ define(['utils'], function (utils) {
         _validateBeforeSet: ['level'],
 
         _modelEvents: { //model events actions
-            /*'change:user': [
-                { action: 'incAttr', fromAttr: 'user', toAttr: 'name' },
-                { action: 'setAttr', fromAttr: 'user', toAttr: 'mail' },
-                { action: 'triggerEvent', ev: 'changed:mail' }
-            ]*/
+            'change:user': [
+                { action: 'setAttr', fromAttr: 'user', toAttr: 'userMirror' }
+            ]
         },
 
         _validations: [

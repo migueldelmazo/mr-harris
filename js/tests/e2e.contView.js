@@ -112,9 +112,21 @@ define(['utils'], function (utils) {
                         });
                     });
                 }
+            },
+            {
+                test: function () {
+                    describe('Model events', function() {
+                        it('Set attr on change: userMirror', function() {
+                            var viewEl = this.test.findView$El('contView'),
+                                model = this.test.findModel('contView');
+                            viewEl.find('[js=user]').val('').trigger('keyup');
+                            expect(model.get('userMirror')).toBe('');
+                            viewEl.find('[js=user]').val('usuario').trigger('keyup');
+                            expect(model.get('userMirror')).toBe('usuario');
+                        });
+                    });
+                }
             }
-
-
         ]
     };
 });
