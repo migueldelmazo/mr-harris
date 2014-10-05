@@ -2,7 +2,8 @@ define([], function () {
 
     return {
         appHomeHash: '',
-        appStartHash: ''
+        appStartHash: '',
+        ajaxUrl: 'json/'
     };
 
 });
