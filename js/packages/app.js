@@ -9,6 +9,7 @@ define([
     'prototype/model',
     'prototype/modelActions',
     'prototype/modelCommunication',
+    'prototype/modelService',
     'prototype/modelSet',
     'prototype/modelValidations',
     'prototype/modelValidationsMethods',

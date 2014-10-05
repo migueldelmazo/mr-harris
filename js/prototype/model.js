@@ -9,6 +9,7 @@ define(['utils'], function (utils) {
             this.defaults = this._defaults || {};
             this._userAttrsChange = [];
             this._validations = this._validations || [];
+            this._serviceInProgress = [];
         },
 
         //listen model events
@@ -19,15 +20,8 @@ define(['utils'], function (utils) {
         },
 
         //model events listener
-        onModelEvents = function (actions) {
-            this.runActions(actions);
-        },
-
-        //run initial services
-        initialService = function () {
-            _.each(this._initialService, function (service) {
-                this.callService(service);
-            }, this);
+        onModelEvents = function () {
+            this.runActions.apply(this, utils.sliceArguments(arguments));
         },
 
         constructorModel = Backbone.Model;
@@ -41,17 +35,8 @@ define(['utils'], function (utils) {
                 initOptions.call(this, options);
                 constructorModel.apply(this, arguments);
                 initModelEvents.call(this);
-                initialService.call(this);
+                utils.foo(this, 'callInitialService');
             }
-        },
-
-        //call ajax service
-        callService: function (service) {
-            var that = this;
-            utils.services.run(service)
-                .done(function (data) {
-                    console.debug(service, data);
-                });
         }
 
     });

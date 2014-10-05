@@ -35,21 +35,41 @@ define([
 
         _initialService: [
             {
+                id: 'products',
                 service: products,
                 method: 'getProducts',
                 params: { one: 1 },
                 set: 'products'
             },
             {
+                id: 'movements',
                 service: movements,
-                method: 'getMovements'
+                method: 'getMovements',
+                onSuccess: 'onSuccessMovements'
             }
         ],
+
+        onSuccessMovements: function (data, service) {
+            console.debug(data, service);
+        },
 
         _modelEvents: { //model events actions
             'change:user': [
                 { action: 'setAttr', fromAttr: 'user', toAttr: 'userMirror' }
+            ],
+            'serviceInProgress:products': [
+                { action: 'runModelMethod', method: 'onServiceProgress' }
+            ],
+            'serviceInProgress:movements': [
+                { action: 'runModelMethod', method: 'onServiceProgress' }
+            ],
+            'serviceInProgress': [
+                { action: 'runModelMethod', method: 'onServiceProgress' }
             ]
+        },
+
+        onServiceProgress: function (state) {
+            console.debug(state);
         },
 
         _validations: [
