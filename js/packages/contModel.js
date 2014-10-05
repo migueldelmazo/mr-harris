@@ -1,4 +1,8 @@
-define(['utils'], function (utils) {
+define([
+    'utils',
+    'services/movements',
+    'services/products'
+], function (utils, movements, products) {
 
     return {
 
@@ -28,6 +32,19 @@ define(['utils'], function (utils) {
         },
 
         _validateBeforeSet: ['level'],
+
+        _initialService: [
+            {
+                service: products,
+                method: 'getProducts',
+                params: { one: 1 },
+                set: 'products'
+            },
+            {
+                service: movements,
+                method: 'getMovements'
+            }
+        ],
 
         _modelEvents: { //model events actions
             'change:user': [
