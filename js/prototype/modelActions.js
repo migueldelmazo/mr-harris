@@ -10,11 +10,16 @@ define(['utils'], function (utils) {
     _.extend(Backbone.Model.prototype, {
 
         runActions: function (actions) {
-            _.each(actions, this.runAction.bind(this));
+            var args = utils.sliceArguments(arguments, 1);
+            _.each(actions, function (action) {
+                this.runAction.apply(this, [action].concat(args));
+            }, this);
         },
 
         runAction: function (action) {
-            utils.foo(this, action.action, undefined, action);
+            var methodArgs = utils.sliceArguments(arguments, 1),
+                fooArgs = [this, action.action, undefined, action];
+            utils.foo.apply(this, fooArgs.concat(methodArgs));
         },
 
         //actions helpers
@@ -25,6 +30,12 @@ define(['utils'], function (utils) {
 
         triggerEvent: function (action) {
             this.trigger(action.ev);
+        },
+
+        runModelMethod: function (action) {
+            var methodArgs = utils.sliceArguments(arguments, 1),
+                fooArgs = [this, action.method, undefined];
+            utils.foo.apply(this, fooArgs.concat(methodArgs));
         }
 
     });
