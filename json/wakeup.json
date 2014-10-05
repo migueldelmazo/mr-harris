@@ -16,6 +16,7 @@
 
             "packages": "js/packages",
             "prototype": "js/prototype",
+            "services": "js/services",
             "testPath": "js/tests",
             "utils": "js/utils/utils"
         },

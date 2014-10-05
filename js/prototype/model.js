@@ -20,6 +20,12 @@ define(['utils'], function (utils) {
             this.runActions(actions);
         },
 
+        initialService = function () {
+            _.each(this._initialService, function (service) {
+                this.callService(service);
+            }, this);
+        },
+
         constructorModel = Backbone.Model;
 
     //extend model class
@@ -31,7 +37,16 @@ define(['utils'], function (utils) {
                 initOptions.call(this, options);
                 constructorModel.apply(this, arguments);
                 initModelEvents.call(this);
+                initialService.call(this);
             }
+        },
+
+        callService: function (service) {
+            var that = this;
+            utils.services.run(service)
+                .done(function (data) {
+                    console.debug(service, data);
+                });
         }
 
     });
