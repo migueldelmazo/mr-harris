@@ -2,8 +2,11 @@ define(['utils'], function (utils) {
 
     //service helpers
 
-    var parseServices = function () {
-            //TODO: parsear id
+    var //parse options in services
+        parseServices = function () {
+            _.each(this._services, function (service) {
+                service.id = service.id || _.uniqueId('service');
+            });
         },
 
         //service resolve callback
@@ -45,9 +48,12 @@ define(['utils'], function (utils) {
     _.extend(Backbone.Model.prototype, {
 
         //run initial services
-        callInitialService: function () {
-            _.each(this._initialService, function (service) {
-                this.callService(service);
+        initServices: function () {
+            parseServices.call(this);
+            _.each(this._services, function (service) {
+                if (this._initialServices.indexOf(service.id) >= 0) {
+                    this.callService(service);
+                }
             }, this);
         },
 

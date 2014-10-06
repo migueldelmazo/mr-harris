@@ -33,7 +33,7 @@ define([
 
         _validateBeforeSet: ['level'],
 
-        _initialService: [
+        _services: [
             {
                 id: 'products',
                 service: products,
@@ -49,6 +49,8 @@ define([
             }
         ],
 
+        _initialServices: ['products', 'movements'],
+
         onSuccessMovements: function (data, service) {
             console.debug(data, service);
         },
@@ -58,9 +60,6 @@ define([
                 { action: 'setAttr', fromAttr: 'user', toAttr: 'userMirror' }
             ],
             'serviceInProgress:products': [
-                { action: 'runModelMethod', method: 'onServiceProgress' }
-            ],
-            'serviceInProgress:movements': [
                 { action: 'runModelMethod', method: 'onServiceProgress' }
             ],
             'serviceInProgress': [

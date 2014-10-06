@@ -9,6 +9,7 @@ define(['utils'], function (utils) {
             this.defaults = this._defaults || {};
             this._userAttrsChange = [];
             this._validations = this._validations || [];
+            this._services = this._services || [];
             this._serviceInProgress = [];
         },
 
@@ -35,7 +36,7 @@ define(['utils'], function (utils) {
                 initOptions.call(this, options);
                 constructorModel.apply(this, arguments);
                 initModelEvents.call(this);
-                utils.foo(this, 'callInitialService');
+                utils.foo(this, 'initServices');
             }
         }
 
