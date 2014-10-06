@@ -1,7 +1,8 @@
 define(['utils'], function (utils) {
 
-    var //constructor service helpers
+    //constructor service helpers
 
+    var //service constructor
         constructor = function (options) {
             initOptions.call(this, options);
             initPromise.call(this);
@@ -40,6 +41,11 @@ define(['utils'], function (utils) {
                 resolve: function (data) {
                     //TODO: parse and validate after ajax call
                     this.promise.resolve(data);
+                },
+
+                //reject this service promise
+                reject: function () {
+                    this.promise.reject();
                 },
 
                 //get mandatory options

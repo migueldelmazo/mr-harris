@@ -21,6 +21,11 @@ define(['utils'], function (utils) {
             triggerServiceInProgress.call(this, service);
         },
 
+        //service reject callback
+        onServiceReject = function (service) {
+            triggerServiceInProgress.call(this, service);
+        },
+
         //trigger serviceInProgress:id and serviceInProgress with state
         triggerServiceInProgress = function (service) {
             var id = service.id,
@@ -64,6 +69,9 @@ define(['utils'], function (utils) {
             utils.services.run(service)
                 .done(function (data) {
                     onServiceResolve.call(that, service, data);
+                })
+                .fail(function () {
+                    onServiceReject.call(that, service);
                 });
         }
 

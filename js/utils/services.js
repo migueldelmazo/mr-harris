@@ -10,8 +10,8 @@ define([], function () {
 
         //find service in cache whit this options
         findCacheService = function (options) {
-            return _.find(cache, function (cacheItem) {
-                return isEqualService(cacheItem, options);
+            return _.find(cache, function (cacheService) {
+                return isEqualService(cacheService, options);
             }) || {};
         },
 
@@ -30,6 +30,17 @@ define([], function () {
             service.data = data;
         },
 
+        //remove service from cache
+        removeServiceCache = function (service) {
+            //find service and set as undefined
+            _.each(cache, function (cacheService, index) {
+                if (isEqualService(cacheService, service)) {
+                    cache[index] = undefined;
+                }
+            });
+            cache = _.compact(cache); //remove undefined services
+        },
+
         //service helpers
 
         //services storage
@@ -40,9 +51,26 @@ define([], function () {
             _.each(services, function (service) {
                 if (isEqualService(service.getOptions(), options)) {
                     service.resolve(data);
-                    removeService(service);
+                    removeService(options);
                 }
             });
+        },
+
+        //called after ajax response, run reject service method
+        rejectService = function (options, data) {
+            _.each(services, function (service) {
+                if (isEqualService(service.getOptions(), options)) {
+                    service.reject(data);
+                    removeService(options);
+                }
+            });
+        },
+
+        //we wait 0 seconds to simulate an ajax call and resolve service
+        resolveServiceInNewThread = function (options, service) {
+            setTimeout(function () {
+                resolveService(options, service.data); //we wait 0 seconds to simulate an ajax call
+            }, 0);
         },
 
         //remove resolved service
@@ -54,13 +82,6 @@ define([], function () {
                 }
             });
             services = _.compact(services); //remove undefined services
-        },
-
-        //we wait 0 seconds to simulate an ajax call and resolve service
-        resolveServiceInNewThread = function (options, service) {
-            setTimeout(function () {
-                resolveService(options, service.data); //we wait 0 seconds to simulate an ajax call
-            }, 0);
         },
 
         //check key attributes between two services
@@ -76,15 +97,23 @@ define([], function () {
         callAjax = function (options) {
             $.ajax(utils.config.get('ajaxUrl') + options.url, {
                 data: options.params,
-                type: options.type
+                type: options.type,
+                context: this
             })
-                .done(onAjaxSuccess.bind(this, options));
+                .done(onAjaxSuccess.bind(this, options))
+                .fail(onAjaxError.bind(this, options));
         },
 
         //ajax success callback
         onAjaxSuccess = function (options, data) {
             setCacheData(options, data);
             resolveService(options, data);
+        },
+
+        //ajax error callback
+        onAjaxError = function (options, data) {
+            this.removeCache(options);
+            rejectService(options, data);
         },
 
         utils;
@@ -112,8 +141,12 @@ define([], function () {
             } else if (!service.inProgress) {
                 //else callAjax and set inProgress to prevent an other ajax call
                 service.inProgress = true;
-                callAjax(options, service);
+                callAjax.call(this, options, service);
             }
+        },
+
+        removeCache: function (service) {
+            removeServiceCache(service);
         }
 
     };
