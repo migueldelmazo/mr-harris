@@ -4,7 +4,6 @@ define([], function () {
 
         getMovements: function () {
             this.url = 'movements.json';
-            return this.getOptions();
         }
 
     };

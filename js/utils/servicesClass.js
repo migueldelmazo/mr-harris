@@ -12,7 +12,7 @@ define(['utils'], function (utils) {
         initOptions = function (options) {
             options = options || {};
             this.method = options.method;
-            this.params = options.params;
+            this.params = options.params || {};
             this.type = options.type || 'GET';
         },
 
@@ -21,35 +21,61 @@ define(['utils'], function (utils) {
             this.promise = $.Deferred();
         },
 
-        //call service method to get ajax options
-        getAjaxOptions = function () {
-            return this[this.method]();
+        //call service method, if return false we not call ajax
+        runServiceMethod = function () {
+            return this[this.method]() === undefined ? true : false;
+        },
+
+        //validate data before or after send ajax call
+        validateData = function (method) {
+            return (this[method]) ? this[method]() : true;
+        },
+
+        //parse data before or after send ajax call
+        parseData = function (method) {
+            if (this[method]) {
+                this[method]();
+            };
         },
 
         //extend service class
         extendPrototype = function (serviceClass) {
             _.extend(serviceClass.prototype, { //extend service class
 
-                //call service method to get ajax options
+                //call service method to set url and ajax options
                 initialize: function () {
-                    var ajaxOptions = getAjaxOptions.call(this);
-                    //TODO: parse and validate before ajax call
-                    utils.services.callAjax(ajaxOptions);
+                    if (runServiceMethod.call(this)) {
+                        if (validateData.call(this, this.validateBeforeSend)) {
+                            parseData.call(this, this.parseBeforeSend);
+                            utils.services.callAjax(this.getServiceKey());
+                        } else {
+                            this.reject();
+                        }
+                    }
                 },
 
                 //resolve this service promise with response data
                 resolve: function (data) {
-                    //TODO: parse and validate after ajax call
-                    this.promise.resolve(data);
+                    var that = this;
+                    setTimeout(function () { //we wait 0 seconds to simulate an ajax call and resolve service
+                        that.data = data;
+                        if (validateData.call(that, that.validateAfterSend)) {
+                            parseData.call(that, that.parseAfterSend);
+                            that.promise.resolve(that.data);
+                        }
+                    }, 0);
                 },
 
                 //reject this service promise
                 reject: function () {
-                    this.promise.reject();
+                    var that = this;
+                    setTimeout(function () { //we wait 0 seconds to simulate an ajax call and reject service
+                        that.promise.reject();
+                    }, 0);
                 },
 
                 //get mandatory options
-                getOptions: function () {
+                getServiceKey: function () {
                     return {
                         params: this.params,
                         type: this.type,
@@ -57,6 +83,7 @@ define(['utils'], function (utils) {
                     };
                 },
 
+                //return this service promise
                 getPromise: function () {
                     return this.promise;
                 }

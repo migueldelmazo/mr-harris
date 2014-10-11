@@ -38,9 +38,16 @@ define([
                 id: 'products',
                 service: products,
                 method: 'getProducts',
-                params: { one: 1 },
+                params: { code: 1 },
                 set: 'products'
-            },
+            },/*
+            {
+                id: 'products',
+                service: products,
+                method: 'getProductsConfig',
+                params: { code: 2 },
+                set: 'productsConfig'
+            },*/
             {
                 id: 'movements',
                 service: movements,
@@ -60,15 +67,19 @@ define([
                 { action: 'setAttr', fromAttr: 'user', toAttr: 'userMirror' }
             ],
             'serviceInProgress:products': [
-                { action: 'runModelMethod', method: 'onServiceProgress' }
+                { action: 'runModelMethod', method: 'onServiceProgressProducts' }
             ],
             'serviceInProgress': [
                 { action: 'runModelMethod', method: 'onServiceProgress' }
             ]
         },
 
+        onServiceProgressProducts: function (state) {
+            console.debug('onServiceProgressProducts:', state);
+        },
+
         onServiceProgress: function (state) {
-            console.debug(state);
+            console.debug('onServiceProgress:', state);
         },
 
         _validations: [

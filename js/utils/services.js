@@ -8,33 +8,33 @@ define([], function () {
         //cache storage
         cache = window.z_cache = [],
 
-        //find service in cache whit this options
-        findCacheService = function (options) {
+        //find service in cache whit this serviceKey
+        findCacheService = function (serviceKey) {
             return _.find(cache, function (cacheService) {
-                return isEqualService(cacheService, options);
+                return isEqualServiceKey(cacheService, serviceKey);
             }) || {};
         },
 
         //store service in cache if not exists, and return it
-        storeServiceInCache = function (options) {
-            var service = findCacheService(options);
+        storeServiceInCache = function (serviceKey) {
+            var service = findCacheService(serviceKey);
             if (_.isEmpty(service)) {
-                cache.push(utils.clone(options)); //if not exist clone and push options in cache
+                cache.push(utils.clone(serviceKey)); //if not exist clone and push serviceKey in cache
             }
-            return findCacheService(options);
+            return findCacheService(serviceKey);
         },
 
         //set ajax data in cache
-        setCacheData = function (options, data) {
-            var service = findCacheService(options);
+        setCacheData = function (serviceKey, data) {
+            var service = findCacheService(serviceKey);
             service.data = data;
         },
 
         //remove service from cache
-        removeServiceCache = function (service) {
+        removeServiceCache = function (serviceKey) {
             //find service and set as undefined
             _.each(cache, function (cacheService, index) {
-                if (isEqualService(cacheService, service)) {
+                if (isEqualServiceKey(cacheService, serviceKey)) {
                     cache[index] = undefined;
                 }
             });
@@ -47,37 +47,30 @@ define([], function () {
         services = window.z_services = [],
 
         //called after ajax response, run resolve service method
-        resolveService = function (options, data) {
+        resolveService = function (serviceKey, data) {
             _.each(services, function (service) {
-                if (isEqualService(service.getOptions(), options)) {
+                if (isEqualServiceKey(service.getServiceKey(), serviceKey)) {
                     service.resolve(data);
-                    removeService(options);
+                    removeService(serviceKey);
                 }
             });
         },
 
         //called after ajax response, run reject service method
-        rejectService = function (options, data) {
+        rejectService = function (serviceKey, data) {
             _.each(services, function (service) {
-                if (isEqualService(service.getOptions(), options)) {
+                if (isEqualServiceKey(service.getServiceKey(), serviceKey)) {
                     service.reject(data);
-                    removeService(options);
+                    removeService(serviceKey);
                 }
             });
         },
 
-        //we wait 0 seconds to simulate an ajax call and resolve service
-        resolveServiceInNewThread = function (options, service) {
-            setTimeout(function () {
-                resolveService(options, service.data); //we wait 0 seconds to simulate an ajax call
-            }, 0);
-        },
-
         //remove resolved service
-        removeService = function (service) {
+        removeService = function (serviceKey) {
             //find service and set as undefined
-            _.each(services, function (_service, index) {
-                if (_service === service) {
+            _.each(services, function (service, index) {
+                if (service === serviceKey) {
                     services[index] = undefined;
                 }
             });
@@ -85,7 +78,7 @@ define([], function () {
         },
 
         //check key attributes between two services
-        isEqualService = function (obj1, obj2) {
+        isEqualServiceKey = function (obj1, obj2) {
             return _.isEqual(obj1.params, obj2.params) &&
                 obj1.type === obj2.type &&
                 obj1.url === obj2.url;
@@ -94,26 +87,26 @@ define([], function () {
         //ajax helpers
 
         //send ajax call
-        callAjax = function (options) {
-            $.ajax(utils.config.get('ajaxUrl') + options.url, {
-                data: options.params,
-                type: options.type,
+        callAjax = function (serviceKey) {
+            $.ajax(utils.config.get('ajaxUrl') + serviceKey.url, {
+                data: serviceKey.params,
+                type: serviceKey.type,
                 context: this
             })
-                .done(onAjaxSuccess.bind(this, options))
-                .fail(onAjaxError.bind(this, options));
+                .done(onAjaxSuccess.bind(this, serviceKey))
+                .fail(onAjaxError.bind(this, serviceKey));
         },
 
         //ajax success callback
-        onAjaxSuccess = function (options, data) {
-            setCacheData(options, data);
-            resolveService(options, data);
+        onAjaxSuccess = function (serviceKey, data) {
+            setCacheData(serviceKey, data);
+            resolveService(serviceKey, data);
         },
 
         //ajax error callback
-        onAjaxError = function (options, data) {
-            this.removeCache(options);
-            rejectService(options, data);
+        onAjaxError = function (serviceKey, data) {
+            this.removeCache(serviceKey);
+            rejectService(serviceKey, data);
         },
 
         utils;
@@ -124,7 +117,7 @@ define([], function () {
             utils = _utils; //store utils
         },
 
-        //instance and run service
+        //instance, run service and return promise
         run: function (serviceDefinition) {
             var instance = utils.classes.instance('service', serviceDefinition.service, serviceDefinition); //instance service
             services.push(instance); //store services
@@ -133,20 +126,20 @@ define([], function () {
         },
 
         //send ajax call or resolve service with cached data
-        callAjax: function (options) {
-            var service = storeServiceInCache(options);
-            if (service.data) {
-                //if exists cached data we resolve this service
-                resolveServiceInNewThread(options, service);
-            } else if (!service.inProgress) {
-                //else callAjax and set inProgress to prevent an other ajax call
+        callAjax: function (serviceKey) {
+            var service = storeServiceInCache(serviceKey),
+                data = service.data;
+            if (data) { //if exists cached data we resolve this service
+                resolveService(serviceKey, data);
+            } else if (!service.inProgress) { //else callAjax and set inProgress to prevent an other ajax call
                 service.inProgress = true;
-                callAjax.call(this, options, service);
+                callAjax.call(this, serviceKey, service);
             }
         },
 
-        removeCache: function (service) {
-            removeServiceCache(service);
+        //remove a service from cache
+        removeCache: function (serviceKey) {
+            removeServiceCache(serviceKey);
         }
 
     };
