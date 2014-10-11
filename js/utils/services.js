@@ -24,10 +24,10 @@ define([], function () {
             return findCacheService(serviceKey);
         },
 
-        //set ajax data in cache
-        setCacheData = function (serviceKey, data) {
+        //set ajax response data in cache
+        setCacheData = function (serviceKey, responseData) {
             var service = findCacheService(serviceKey);
-            service.data = data;
+            service.responseData = responseData;
         },
 
         //remove service from cache
@@ -47,20 +47,20 @@ define([], function () {
         services = window.z_services = [],
 
         //called after ajax response, run resolve service method
-        resolveService = function (serviceKey, data) {
+        resolveService = function (serviceKey, responseData) {
             _.each(services, function (service) {
                 if (isEqualServiceKey(service.getServiceKey(), serviceKey)) {
-                    service.resolve(data);
+                    service.resolve(responseData);
                     removeService(serviceKey);
                 }
             });
         },
 
         //called after ajax response, run reject service method
-        rejectService = function (serviceKey, data) {
+        rejectService = function (serviceKey, responseError) {
             _.each(services, function (service) {
                 if (isEqualServiceKey(service.getServiceKey(), serviceKey)) {
-                    service.reject(data);
+                    service.reject(responseError);
                     removeService(serviceKey);
                 }
             });
@@ -79,9 +79,7 @@ define([], function () {
 
         //check key attributes between two services
         isEqualServiceKey = function (obj1, obj2) {
-            return _.isEqual(obj1.params, obj2.params) &&
-                obj1.type === obj2.type &&
-                obj1.url === obj2.url;
+            return _.isEqual(obj1.params, obj2.params) && obj1.type === obj2.type && obj1.url === obj2.url;
         },
 
         //ajax helpers
@@ -98,15 +96,15 @@ define([], function () {
         },
 
         //ajax success callback
-        onAjaxSuccess = function (serviceKey, data) {
-            setCacheData(serviceKey, data);
-            resolveService(serviceKey, data);
+        onAjaxSuccess = function (serviceKey, responseData) {
+            setCacheData(serviceKey, responseData);
+            resolveService(serviceKey, responseData);
         },
 
         //ajax error callback
-        onAjaxError = function (serviceKey, data) {
+        onAjaxError = function (serviceKey, responseError) {
             this.removeCache(serviceKey);
-            rejectService(serviceKey, data);
+            rejectService(serviceKey, responseError); //TODO: manage ajax errors
         },
 
         utils;
@@ -125,12 +123,12 @@ define([], function () {
             return instance.getPromise();
         },
 
-        //send ajax call or resolve service with cached data
+        //send ajax call or resolve service with cached response data
         callAjax: function (serviceKey) {
             var service = storeServiceInCache(serviceKey),
-                data = service.data;
-            if (data) { //if exists cached data we resolve this service
-                resolveService(serviceKey, data);
+                responseData = service.responseData;
+            if (responseData) { //if exists cached response data we resolve this service
+                resolveService(serviceKey, responseData);
             } else if (!service.inProgress) { //else callAjax and set inProgress to prevent an other ajax call
                 service.inProgress = true;
                 callAjax.call(this, serviceKey, service);

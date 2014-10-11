@@ -23,11 +23,11 @@ define([], function () {
         },
 
         getProductsValidateAfterSend: function () {
-            return _.isString(this.data.user);
+            return _.isString(this.responseData.user);
         },
 
         getProductsParseAfterSend: function () {
-            this.data.user += 1;
+            this.responseData.user += 1;
         },
 
         //getProductsConfig

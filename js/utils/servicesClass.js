@@ -4,12 +4,12 @@ define(['utils'], function (utils) {
 
     var //service constructor
         constructor = function (options) {
-            initOptions.call(this, options);
+            parseOptions.call(this, options);
             initPromise.call(this);
         },
 
         //init service options
-        initOptions = function (options) {
+        parseOptions = function (options) {
             options = options || {};
             this.method = options.method;
             this.params = options.params || {};
@@ -26,13 +26,13 @@ define(['utils'], function (utils) {
             return this[this.method]() === undefined ? true : false;
         },
 
-        //validate data before or after send ajax call
-        validateData = function (method) {
+        //validate before or after send ajax call
+        validate = function (method) {
             return (this[method]) ? this[method]() : true;
         },
 
-        //parse data before or after send ajax call
-        parseData = function (method) {
+        //parse before or after send ajax call
+        parse = function (method) {
             if (this[method]) {
                 this[method]();
             };
@@ -45,8 +45,8 @@ define(['utils'], function (utils) {
                 //call service method to set url and ajax options
                 initialize: function () {
                     if (runServiceMethod.call(this)) {
-                        if (validateData.call(this, this.validateBeforeSend)) {
-                            parseData.call(this, this.parseBeforeSend);
+                        if (validate.call(this, this.validateBeforeSend)) {
+                            parse.call(this, this.parseBeforeSend);
                             utils.services.callAjax(this.getServiceKey());
                         } else {
                             this.reject();
@@ -55,13 +55,13 @@ define(['utils'], function (utils) {
                 },
 
                 //resolve this service promise with response data
-                resolve: function (data) {
+                resolve: function (responseData) {
                     var that = this;
                     setTimeout(function () { //we wait 0 seconds to simulate an ajax call and resolve service
-                        that.data = data;
-                        if (validateData.call(that, that.validateAfterSend)) {
-                            parseData.call(that, that.parseAfterSend);
-                            that.promise.resolve(that.data);
+                        that.responseData = responseData;
+                        if (validate.call(that, that.validateAfterSend)) {
+                            parse.call(that, that.parseAfterSend);
+                            that.promise.resolve(that.responseData);
                         }
                     }, 0);
                 },
