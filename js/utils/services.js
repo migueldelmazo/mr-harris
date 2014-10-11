@@ -3,7 +3,25 @@ define([], function () {
     //TODO: hacer removeAjaxCache
     //TODO: gestionar errores xhr
 
-    var //cache helpers
+    var /*
+         *  util: service > cache
+         *
+         *  'cache' is an array in which we are stored objects called 'serviceKey'.
+         *  We use 'serviceKey' as a key to relate it to the services instances.
+         *  'serviceKey' has this sctructure:
+         *  {
+         *      url: 'my-url.json' //ajax url
+         *      method: 'GET', //ajax method, maybe GET, POST, PUT...
+         *      params: { myParams: 'foo' }, //ajax params to send to API
+         *      responseData: {} //response data of ajax call. Only after ajax call response successfully.
+         *  }
+         *
+         *  When a service is created, 'serviceKey' is checked whether there is in the 'cache'.
+         *  If there is in 'cache', we resolve service instance with 'responseData'.
+         *  If not, the 'serviceKey' is cached and service instance waits for for ajax call finished.
+         *
+         *  When an ajax call finishes, we store its 'responseData' in the corresponding 'serviceKey' from the 'cache'.
+         */
 
         //cache storage
         cache = window.z_cache = [],
@@ -30,7 +48,7 @@ define([], function () {
             service.responseData = responseData;
         },
 
-        //remove service from cache
+        //remove service from cache with serviceKey
         removeServiceCache = function (serviceKey) {
             //find service and set as undefined
             _.each(cache, function (cacheService, index) {
@@ -41,7 +59,26 @@ define([], function () {
             cache = _.compact(cache); //remove undefined services
         },
 
-        //service helpers
+        /*
+         *  util: service
+         *
+         *  A service is an instance of 'serviceClass'.
+         *  'services' is an array where we store the services that are waiting an ajax response.
+         *
+         *  Flow:
+         *  - Someone running the method 'run' that:
+         *    - Instance object of type 'service'.
+         *    - Run 'initialize' instance method, to create its 'serviceKey'
+         *    - Instance should call public method 'callAjax'.
+         *    - 'callAjax' checks cached data for this 'serviceKey'.
+         *      - If no cached data, call ajax API
+         *  - When an ajax call answered successfully:
+         *    - Set responseData in 'cache'.
+         *    - We resolve all services have with this 'serviceKey'.
+         *  - When a call ajax responds with error:
+         *    - We remove the 'serviceKey' in 'cache' of this service.
+         *    - We reject all services have with this 'serviceKey'.
+         */
 
         //services storage
         services = window.z_services = [],
@@ -95,13 +132,13 @@ define([], function () {
                 .fail(onAjaxError.bind(this, serviceKey));
         },
 
-        //ajax success callback
+        //ajax success callback, store responseData in cache and resolve services
         onAjaxSuccess = function (serviceKey, responseData) {
             setCacheData(serviceKey, responseData);
             resolveService(serviceKey, responseData);
         },
 
-        //ajax error callback
+        //ajax error callback, remove serviceKey from cache and reject services
         onAjaxError = function (serviceKey, responseError) {
             this.removeCache(serviceKey);
             rejectService(serviceKey, responseError); //TODO: manage ajax errors

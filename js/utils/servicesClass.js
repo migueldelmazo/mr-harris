@@ -11,6 +11,7 @@ define(['utils'], function (utils) {
         //init service options
         parseOptions = function (options) {
             options = options || {};
+            this.data = {};
             this.method = options.method;
             this.params = options.params || {};
             this.type = options.type || 'GET';
