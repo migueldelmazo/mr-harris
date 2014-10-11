@@ -4,62 +4,6 @@ define([], function () {
     //TODO: gestionar errores xhr
 
     var /*
-         *  util: service > cache
-         *
-         *  'cache' is an array in which we are stored objects called 'serviceKey'.
-         *  We use 'serviceKey' as a key to relate it to the services instances.
-         *  'serviceKey' has this sctructure:
-         *  {
-         *      url: 'my-url.json' //ajax url
-         *      method: 'GET', //ajax method, maybe GET, POST, PUT...
-         *      params: { myParams: 'foo' }, //ajax params to send to API
-         *      responseData: {} //response data of ajax call. Only after ajax call response successfully.
-         *  }
-         *
-         *  When a service is created, 'serviceKey' is checked whether there is in the 'cache'.
-         *  If there is in 'cache', we resolve service instance with 'responseData'.
-         *  If not, the 'serviceKey' is cached and service instance waits for for ajax call finished.
-         *
-         *  When an ajax call finishes, we store its 'responseData' in the corresponding 'serviceKey' from the 'cache'.
-         */
-
-        //cache storage
-        cache = window.z_cache = [],
-
-        //find service in cache whit this serviceKey
-        findCacheService = function (serviceKey) {
-            return _.find(cache, function (cacheService) {
-                return isEqualServiceKey(cacheService, serviceKey);
-            }) || {};
-        },
-
-        //store service in cache if not exists, and return it
-        storeServiceInCache = function (serviceKey) {
-            var service = findCacheService(serviceKey);
-            if (_.isEmpty(service)) {
-                cache.push(utils.clone(serviceKey)); //if not exist clone and push serviceKey in cache
-            }
-            return findCacheService(serviceKey);
-        },
-
-        //set ajax response data in cache
-        setCacheData = function (serviceKey, responseData) {
-            var service = findCacheService(serviceKey);
-            service.responseData = responseData;
-        },
-
-        //remove service from cache with serviceKey
-        removeServiceCache = function (serviceKey) {
-            //find service and set as undefined
-            _.each(cache, function (cacheService, index) {
-                if (isEqualServiceKey(cacheService, serviceKey)) {
-                    cache[index] = undefined;
-                }
-            });
-            cache = _.compact(cache); //remove undefined services
-        },
-
-        /*
          *  util: service
          *
          *  A service is an instance of 'serviceClass'.
@@ -142,6 +86,62 @@ define([], function () {
         onAjaxError = function (serviceKey, responseError) {
             this.removeCache(serviceKey);
             rejectService(serviceKey, responseError); //TODO: manage ajax errors
+        },
+
+        /*
+         *  util: service > cache
+         *
+         *  'cache' is an array in which we are stored objects called 'serviceKey'.
+         *  We use 'serviceKey' as a key to relate it to the services instances.
+         *  'serviceKey' has this sctructure:
+         *  {
+         *      url: 'my-url.json' //ajax url
+         *      method: 'GET', //ajax method, maybe GET, POST, PUT...
+         *      params: { myParams: 'foo' }, //ajax params to send to API
+         *      responseData: {} //response data of ajax call. Only after ajax call response successfully.
+         *  }
+         *
+         *  When a service is created, 'serviceKey' is checked whether there is in the 'cache'.
+         *  If there is in 'cache', we resolve service instance with 'responseData'.
+         *  If not, the 'serviceKey' is cached and service instance waits for for ajax call finished.
+         *
+         *  When an ajax call finishes, we store its 'responseData' in the corresponding 'serviceKey' from the 'cache'.
+         */
+
+        //cache storage
+        cache = window.z_cache = [],
+
+        //find service in cache whit this serviceKey
+        findCacheService = function (serviceKey) {
+            return _.find(cache, function (cacheService) {
+                return isEqualServiceKey(cacheService, serviceKey);
+            }) || {};
+        },
+
+        //store service in cache if not exists, and return it
+        storeServiceInCache = function (serviceKey) {
+            var service = findCacheService(serviceKey);
+            if (_.isEmpty(service)) {
+                cache.push(utils.clone(serviceKey)); //if not exist clone and push serviceKey in cache
+            }
+            return findCacheService(serviceKey);
+        },
+
+        //set ajax response data in cache
+        setCacheData = function (serviceKey, responseData) {
+            var service = findCacheService(serviceKey);
+            service.responseData = responseData;
+        },
+
+        //remove service from cache with serviceKey
+        removeServiceCache = function (serviceKey) {
+            //find service and set as undefined
+            _.each(cache, function (cacheService, index) {
+                if (isEqualServiceKey(cacheService, serviceKey)) {
+                    cache[index] = undefined;
+                }
+            });
+            cache = _.compact(cache); //remove undefined services
         },
 
         utils;
