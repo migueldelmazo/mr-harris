@@ -18,7 +18,7 @@ define([], function () {
          *      - If no cached data, call ajax API
          *  - When an ajax call answered successfully:
          *    - Set responseData in 'cache'.
-         *    - We resolve all services have with this 'serviceKey'.
+         *    - We resolve all services have with this 'serviceKey', and remove this services.
          *  - When a call ajax responds with error:
          *    - We remove the 'serviceKey' in 'cache' of this service.
          *    - We reject all services have with this 'serviceKey'.
@@ -61,6 +61,37 @@ define([], function () {
         //check key attributes between two services
         isEqualServiceKey = function (obj1, obj2) {
             return _.isEqual(obj1.params, obj2.params) && obj1.type === obj2.type && obj1.url === obj2.url;
+        },
+
+        /*
+         *  util: services > ajax
+         *
+         *  'callAjax' send ajax call to API.
+         *  'onAjaxSuccess' set 'responseData' in 'cache' and resolve services.
+         *  'onAjaxError' remove 'serviceKey' fron 'cache' and reject service.
+         */
+
+        //send ajax call
+        callAjax = function (serviceKey) {
+            $.ajax(utils.config.get('ajaxUrl') + serviceKey.url, {
+                data: serviceKey.params,
+                type: serviceKey.type,
+                context: this
+            })
+                .done(onAjaxSuccess.bind(this, serviceKey))
+                .fail(onAjaxError.bind(this, serviceKey));
+        },
+
+        //ajax success callback, store responseData in cache and resolve services
+        onAjaxSuccess = function (serviceKey, responseData) {
+            setCacheData(serviceKey, responseData);
+            resolveService(serviceKey, responseData);
+        },
+
+        //ajax error callback, remove serviceKey from cache and reject services
+        onAjaxError = function (serviceKey, responseError) {
+            this.removeCache(serviceKey);
+            rejectService(serviceKey, responseError); //TODO: manage ajax errors
         },
 
         /*
@@ -119,33 +150,6 @@ define([], function () {
             cache = _.compact(cache); //remove undefined services
         },
 
-        /*
-         * ajax helpers
-         */
-
-        //send ajax call
-        callAjax = function (serviceKey) {
-            $.ajax(utils.config.get('ajaxUrl') + serviceKey.url, {
-                data: serviceKey.params,
-                type: serviceKey.type,
-                context: this
-            })
-                .done(onAjaxSuccess.bind(this, serviceKey))
-                .fail(onAjaxError.bind(this, serviceKey));
-        },
-
-        //ajax success callback, store responseData in cache and resolve services
-        onAjaxSuccess = function (serviceKey, responseData) {
-            setCacheData(serviceKey, responseData);
-            resolveService(serviceKey, responseData);
-        },
-
-        //ajax error callback, remove serviceKey from cache and reject services
-        onAjaxError = function (serviceKey, responseError) {
-            this.removeCache(serviceKey);
-            rejectService(serviceKey, responseError); //TODO: manage ajax errors
-        },
-
         utils;
 
     return {
@@ -155,7 +159,7 @@ define([], function () {
         },
 
         /*
-         * public service methods
+         *  public service methods
          */
 
         //instance, run service and return promise

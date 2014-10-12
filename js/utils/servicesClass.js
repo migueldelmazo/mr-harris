@@ -1,8 +1,26 @@
 define(['utils'], function (utils) {
 
-    //constructor service helpers
+    var /*
+         *  util: serviceClass
+         *
+         *  A service is an instance of 'serviceClass'.
+         *
+         *  Flow:
+         *  - constructor parse options and init promise.
+         *  - util service run 'initialize':
+         *    - Call instante options 'method', for set serviceKey.
+         *    - Validate and parse params before send ajax call.
+         *    - If options 'method' return 'undefined' call ajax.
+         *  - When ajax call finished:
+         *    - Validate and parse responseData after send ajax call.
+         *    - Resolve or reject method this promise.
+         *
+         *  'ServiceClass' is designed to send an ajax call.
+         *  But the options 'method' can perform other operations, such as get data from localStorage.
+         *  This options 'method' is responsible for resolving the promise.
+         */
 
-    var //service constructor
+        //service constructor
         constructor = function (options) {
             parseOptions.call(this, options);
             initPromise.call(this);
