@@ -1,15 +1,50 @@
 define(['utils'], function (utils) {
 
-    var //runTest helpers
+    /*
+     *  util: testClass
+     *
+     *  A test is an array of actions to be run
+     *  Each action can have this structure:
+     *  {
+     *      navigate: 'my-url', //navigate to this url
+     *      name: 'test name', //mandatory, test name
+     *      do: function () { ... }, //actions to be executed before running the test
+     *      waitEvent: 'login', //the test will not be executed until someone trigger this application event
+     *      waitFor: function () { return true; }, //the test will not be executed until this method returns true
+     *      test: function () { ... }, //test specifications
+     *      wait: 1000 //waiting time before executing the next test
+     *  }
+     */
 
-        initOptions = function () {
+     var /*
+          *  'runTest' public method:
+          *  - Reset options
+          *  - Run first action
+          *  - Wait to run next action:
+          *     - If action has 'test', test library runs 'incActionIndex' public method when finish
+          *     - Else, we run 'incActionIndex'
+          */
+
+        //reset initial options
+        resetOptions = function () {
             this.actionIndex = 0;
             this.result = true;
             this.running = true;
         },
 
-        //run action
-        runAction = function (action) {
+        //run current action or finish test
+        runAction = function () {
+            var action = getCurrentAction.call(this);
+            if (this.result) { //check if previous test passed
+                runTestAction.call(this, action);
+                checkIncActionIndex.call(this, action);
+            } else {
+                finishTest.call(this);
+            }
+        },
+
+        //run test action options
+        runTestAction = function (action) {
             if (action.navigate) {
                 this.app.navigate(action.navigate);
             }
@@ -28,7 +63,7 @@ define(['utils'], function (utils) {
             }
         },
 
-        //increment action index and finish
+        //increment action index or finish
         incActionIndex = function () {
             if (this.actionIndex < _.size(this.actions) - 1) {
                 this.actionIndex = this.actionIndex + 1;
@@ -42,13 +77,14 @@ define(['utils'], function (utils) {
             return this.actions[this.actionIndex];
         }
 
-        //wait an event or time to run next action
+        //wait an application event or time to run next action
         waitNextAction = function (action) {
+            var DEFAULT_WAITING_TIME = 100;
             if (this.running) {
                 if (action.waitEvent) {
-                    this.app.appEventOnce(action.waitEvent, this._runAction, this);
+                    this.app.appEventOnce(action.waitEvent, runAction, this);
                 } else {
-                    setTimeout(this._runAction.bind(this), action.wait || 100);
+                    setTimeout(runAction.bind(this), action.wait || DEFAULT_WAITING_TIME);
                 }
             }
         },
@@ -59,59 +95,60 @@ define(['utils'], function (utils) {
             this.onFinish();
         },
 
-        //constructor test helpers
+        /*
+         *  Test class constructor:
+         *  - Get application
+         *  - Listen application events
+         */
 
+        //test constructor
         constructor = function () {
             this.app = utils.config.get('app');
             initEvents.call(this);
         },
 
-        //on listen _events run test
+        //on listen events run test for zombie tests
         initEvents = function () {
             _.each(this.events, function (ev) {
                 this.app.appEventOn(ev, this.runTest, this);
             }, this);
         },
 
+        //extend test class
         extendPrototype = function (testClass) {
-            _.extend(testClass.prototype, { //extend test class
+            _.extend(testClass.prototype, {
 
+                //run first action of this test, public method
                 runTest: function () {
-                    initOptions.call(this);
-                    this._runAction();
+                    resetOptions.call(this);
+                    runAction.call(this);
                 },
 
-                _runAction: function () {
-                    var action = getCurrentAction.call(this);
-                    if (this.result) { //check if previous test passed
-                        runAction.call(this, action);
-                        checkIncActionIndex.call(this, action);
-                    } else {
-                        finishTest.call(this);
-                    }
-                },
-
+                //increment action index of test, public method to be called for test library
                 incActionIndex: function () {
                     incActionIndex.call(this);
                     waitNextAction.call(this, getCurrentAction.call(this));
                 },
 
-                //find items
+                //helpers for test instance
 
+                //return a '$el' attribute from a view
                 findView$El: function (list) {
                     var view = this.app.getAppView().findView(list);
                     return view ? view.$el : $();
                 },
 
+                //return a jquery selector from a view
                 find$El: function (view, selector) {
                     return this.findView$El(view).find(selector);
                 },
 
+                //return a model of a view
                 findModel: function (list) {
                     return this.app.getAppView().findModel(list);
                 },
 
-                //send bad test to errors
+                //send bad test to errors, public method to be called for test library
                 sendResults: function (report) {
                     console.debug(report);
                     if (!report.result) {

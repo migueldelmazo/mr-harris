@@ -1,26 +1,26 @@
 define(['utils'], function (utils) {
 
-    var /*
-         *  util: serviceClass
-         *
-         *  A service is an instance of 'serviceClass'.
-         *
-         *  Flow:
-         *  - constructor parse options and init promise.
-         *  - util service run 'initialize':
-         *    - Call instante options 'method', for set serviceKey.
-         *    - Validate and parse params before send ajax call.
-         *    - If options 'method' return 'undefined' call ajax.
-         *  - When ajax call finished:
-         *    - Validate and parse responseData after send ajax call.
-         *    - Resolve or reject method this promise.
-         *
-         *  'ServiceClass' is designed to send an ajax call.
-         *  But the options 'method' can perform other operations, such as get data from localStorage.
-         *  This options 'method' is responsible for resolving the promise.
-         */
+    /*
+     *  util: serviceClass
+     *
+     *  A service is an instance of 'serviceClass'.
+     *
+     *  Flow:
+     *  - constructor parse options and init promise.
+     *  - util service run 'initialize':
+     *    - Call instante options 'method', for set serviceKey.
+     *    - Validate and parse params before send ajax call.
+     *    - If options 'method' return 'undefined' call ajax.
+     *  - When ajax call finished:
+     *    - Validate and parse responseData after send ajax call.
+     *    - Resolve or reject method this promise.
+     *
+     *  'ServiceClass' is designed to send an ajax call.
+     *  But the options 'method' can perform other operations, such as get data from localStorage.
+     *  This options 'method' is responsible for resolving the promise.
+     */
 
-        //service constructor
+    var //service constructor
         constructor = function (options) {
             parseOptions.call(this, options);
             initPromise.call(this);
@@ -64,11 +64,11 @@ define(['utils'], function (utils) {
                 //call service method to set url and ajax options
                 initialize: function () {
                     if (runServiceMethod.call(this)) {
-                        if (validate.call(this, this.validateBeforeSend)) {
-                            parse.call(this, this.parseBeforeSend);
-                            utils.services.callAjax(this.getServiceKey());
+                        if (validate.call(this, this.validateBeforeSend)) { //validate befor send
+                            parse.call(this, this.parseBeforeSend); //parse before send
+                            utils.services.callAjax(this.getServiceKey()); //send ajax call
                         } else {
-                            this.reject();
+                            this.reject(); //invalid params
                         }
                     }
                 },
@@ -78,9 +78,9 @@ define(['utils'], function (utils) {
                     var that = this;
                     setTimeout(function () { //we wait 0 seconds to simulate an ajax call and resolve service
                         that.responseData = responseData;
-                        if (validate.call(that, that.validateAfterSend)) {
-                            parse.call(that, that.parseAfterSend);
-                            that.promise.resolve(that.responseData);
+                        if (validate.call(that, that.validateAfterSend)) { //validate after send
+                            parse.call(that, that.parseAfterSend); //parse after send
+                            that.promise.resolve(that.responseData); //resolve promise
                         }
                     }, 0);
                 },

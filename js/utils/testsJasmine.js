@@ -14,6 +14,7 @@ define(['utils'], function (utils) {
             reporter.reportSpecResults = function (spec) {
                 var results = spec.results(),
                     passed = results.passed();
+                //send results
                 spec.test.sendResults({
                     suite: spec.suite.description,
                     spec: spec.description,
@@ -21,6 +22,7 @@ define(['utils'], function (utils) {
                     test: spec.test,
                     items: passed || results.getItems()
                 });
+                //increment test action
                 spec.test.incActionIndex();
             };
             return reporter;

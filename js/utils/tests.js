@@ -1,9 +1,27 @@
 define([], function () {
 
-    var instances = window.z_testInstances = [],
+    /*
+     *  util: test
+     *
+     *  This library passes unit/zombie and end to end tests
+     *    - A unit/zombie waiting to an application event to be executed
+     *
+     *  Flow:
+     *  - Someone runs 'requireTestFiles'
+     *    - Get test file urls of configuration
+     *    - Require test files
+     *    - Instance and store this test
+     *    - Iterate the instances and wait to 'onFinish' is run
+     *    - Return a promise. When this library resolves the promise, app can start
+     *  Promise:
+     *    - 'appWaitsToTestToBeLoaded' configuration value specifies whether to wait to require all test
+     */
 
-        //requireTestFiles helpers
+    var //requireTestFiles helpers
 
+        instances = window.z_testInstances = [],
+
+        //require, instance and store test, run first instance too
         requireTestFiles = function (promise) {
             require(parseTestsUrls(), function () {
                 appWaitsToTestToBeLoaded(promise, true);
@@ -12,12 +30,14 @@ define([], function () {
             });
         },
 
+        //get test file urls and parse
         parseTestsUrls = function () {
             return _.map(utils.config.get('tests', []), function (test) {
                 return 'testPath/' + test;
             }).concat(utils.config.get('testsLibraries', []));
         },
 
+        //check 'wait' and 'appWaitsToTestToBeLoaded' to resolve the promise
         appWaitsToTestToBeLoaded = function (promise, wait) {
             //wait or not wait test to be loaded, to resolve the promise
             if (!!utils.config.get('appWaitsToTestToBeLoaded') === wait) {
@@ -25,7 +45,7 @@ define([], function () {
             }
         },
 
-        //instance and store tests
+        //instance and store tests, set public 'onFinish' method
         instanceTests = function (testDefinitions) {
             _.each(testDefinitions, function (testDefinition) {
                 var instance = utils.classes.instance('test', testDefinition);
@@ -40,10 +60,11 @@ define([], function () {
 
         instancesIndex = -1,
 
+        //run the next test, jumping zombies
         runNextInstance = function () {
             instancesIndex += 1;
             if (instancesIndex < _.size(instances)) {
-                if (instances[instancesIndex].events) { //if test has _events, is a zombie
+                if (instances[instancesIndex].events) { //if test has events, is a zombie
                     runNextInstance();
                 } else {
                     instances[instancesIndex].runTest();
@@ -59,6 +80,7 @@ define([], function () {
             utils = _utils;
         },
 
+        //public method to init test
         requireTestFiles: function () {
             var promise = $.Deferred();
             requireTestFiles(promise);
