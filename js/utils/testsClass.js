@@ -8,6 +8,26 @@ define(['utils'], function (utils) {
             this.running = true;
         },
 
+        //run action
+        runAction = function (action) {
+            if (action.navigate) {
+                this.app.navigate(action.navigate);
+            }
+            if (action.do) {
+                action.do.call(this);
+            }
+            if (action.test) {
+                this.runProof(action); //must to be overwritten by the test's library, for example jasmine
+            }
+        },
+
+        //check if increment action index
+        checkIncActionIndex = function (action) {
+            if (!action.test) {
+                this.incActionIndex();
+            }
+        },
+
         //increment action index and finish
         incActionIndex = function () {
             if (this.actionIndex < _.size(this.actions) - 1) {
@@ -16,6 +36,11 @@ define(['utils'], function (utils) {
                 finishTest.call(this);
             }
         },
+
+        //get current action
+        getCurrentAction = function () {
+            return this.actions[this.actionIndex];
+        }
 
         //wait an event or time to run next action
         waitNextAction = function (action) {
@@ -43,7 +68,7 @@ define(['utils'], function (utils) {
 
         //on listen _events run test
         initEvents = function () {
-            _.each(this._events, function (ev) {
+            _.each(this.events, function (ev) {
                 this.app.appEventOn(ev, this.runTest, this);
             }, this);
         },
@@ -57,20 +82,29 @@ define(['utils'], function (utils) {
                 },
 
                 _runAction: function () {
-                    var action = this.actions[this.actionIndex];
+                    var action = getCurrentAction.call(this);
                     if (this.result) { //check if previous test passed
-                        this.runProof(action); //must to be overwritten by the test's library, for example jasmine
-                        incActionIndex.call(this);
-                        waitNextAction.call(this, action);
+                        runAction.call(this, action);
+                        checkIncActionIndex.call(this, action);
                     } else {
                         finishTest.call(this);
                     }
                 },
 
+                incActionIndex: function () {
+                    incActionIndex.call(this);
+                    waitNextAction.call(this, getCurrentAction.call(this));
+                },
+
                 //find items
 
                 findView$El: function (list) {
-                    return this.app.getAppView().findView(list).$el;
+                    var view = this.app.getAppView().findView(list);
+                    return view ? view.$el : $();
+                },
+
+                find$El: function (view, selector) {
+                    return this.findView$El(view).find(selector);
                 },
 
                 findModel: function (list) {
@@ -88,7 +122,8 @@ define(['utils'], function (utils) {
                             code: 'test not passed',
                             result: report.result,
                             suite: report.suite,
-                            spec: report.spec
+                            spec: report.spec,
+                            items: report.items
                         });
                     }
                 }

@@ -1,7 +1,7 @@
 {
-    "appStartFile": "js/packages/app",
+    "appStartFile": "js/packages/app/app",
 
-    "tests": ["unit.storage", "e2e.contView"],
+    "tests": ["unit.storage", "e2e.service", "e2e.fooView"],
     "testsLibraries": ["js/utils/testsJasmine"],
     "appWaitsToTestToBeLoaded": true,
 

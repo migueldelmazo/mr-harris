@@ -2,31 +2,45 @@ define(['utils'], function (utils) {
 
     return {
 
-        _events: ['submit'],
+        events: ['submit'],
+
+        name: 'Local and session storage',
 
         actions: [
             {
+                name: 'Set/Get local storage',
+                do: function () {
+                    utils.storage.localSet('foo', 'foo');
+                },
                 test: function () {
-                    describe("Local storage", function() {
-                        it("Set/Get/Del", function() {
-                            utils.storage.localSet('foo', 'foo');
-                            expect(utils.storage.localGet('foo')).toBe('foo');
-                            utils.storage.localDel('foo');
-                            expect(utils.storage.localGet('foo')).toBe(undefined);
-                        });
-                    });
+                    expect(utils.storage.localGet('foo')).toBe('foo');
                 }
             },
             {
+                name: 'Del local storage',
+                do: function () {
+                    utils.storage.localDel('foo');
+                },
                 test: function () {
-                    describe("Session storage", function() {
-                        it("Set/Get/Del", function() {
-                            utils.storage.sessionSet('foo', 'foo');
-                            expect(utils.storage.sessionGet('foo')).toBe('foo');
-                            utils.storage.sessionDel('foo');
-                            expect(utils.storage.sessionGet('foo')).toBe(undefined);
-                        });
-                    });
+                    expect(utils.storage.localGet('foo')).toBe(undefined);
+                }
+            },
+            {
+                name: 'Set/Get session storage',
+                do: function () {
+                    utils.storage.sessionSet('foo', 'foo');
+                },
+                test: function () {
+                    expect(utils.storage.sessionGet('foo')).toBe('foo');
+                }
+            },
+            {
+                name: 'Del session storage',
+                do: function () {
+                    utils.storage.sessionDel('foo');
+                },
+                test: function () {
+                    expect(utils.storage.sessionGet('foo')).toBe(undefined);
                 }
             }
         ]

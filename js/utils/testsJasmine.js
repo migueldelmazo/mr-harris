@@ -12,12 +12,16 @@ define(['utils'], function (utils) {
         initReporter = function () {
             var reporter = new jasmine.JsApiReporter();
             reporter.reportSpecResults = function (spec) {
+                var results = spec.results(),
+                    passed = results.passed();
                 spec.test.sendResults({
                     suite: spec.suite.description,
                     spec: spec.description,
-                    result: spec.results().passed(),
-                    test: spec.test
+                    result: passed,
+                    test: spec.test,
+                    items: passed || results.getItems()
                 });
+                spec.test.incActionIndex();
             };
             return reporter;
         },
@@ -40,7 +44,16 @@ define(['utils'], function (utils) {
         runProof: function (action) {
             if (_.isFunction(action.test)) {
                 initBeforeEach.call(this); //add before each
-                action.test.call(this);
+                describe(this.name, function () {
+                    it(action.name, function () {
+                        if (action.waitsFor) {
+                            waitsFor(action.waitsFor.bind(this.test), 'WaitsFor is not resolved', 100);
+                            runs(action.test.bind(this.test));
+                        } else {
+                            action.test.call(this.test);
+                        }
+                    });
+                });
                 jasmineSingleton.execute(); //run test
             }
         }

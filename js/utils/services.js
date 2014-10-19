@@ -143,7 +143,7 @@ define([], function () {
         removeServiceCache = function (serviceKey) {
             //find service and set as undefined
             _.each(cache, function (cacheService, index) {
-                if (isEqualServiceKey(cacheService, serviceKey)) {
+                if (serviceKey === undefined || isEqualServiceKey(cacheService, serviceKey)) {
                     cache[index] = undefined;
                 }
             });

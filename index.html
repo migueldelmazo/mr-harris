@@ -16,7 +16,7 @@
             <script type="text/template" id="header-view">
                 <h1>Mr. Harris</h1>
             </script>
-            <script type="text/template" id="cont-view">
+            <script type="text/template" id="foo-view">
                 <div class="row3">
                     <h2 js='contenteditable'>Form</h2>
                     <form js="form">
@@ -47,12 +47,18 @@
                         </label>
                         <input js="submit" type="submit" />
                     </form>
-                    <div region="subCont" />
+                    <div region="fooChild" />
                 </div>
             </script>
-            <script type="text/template" id="sub-cont-view">
+            <script type="text/template" id="sub-foo-view">
                 <p>Click me for autocomplete</p>
                 <code js="code"></code>
+            </script>
+            <script type="text/template" id="service-view">
+                <h2>Service</h2>
+                 <form js="form">
+                        <button js="simple-service">Simple service</button>
+                    </form>
             </script>
         </div>
     </body>

@@ -1,12 +1,8 @@
-define([
-    'utils',
-    'services/movements',
-    'services/products'
-], function (utils, movements, products) {
+define(['utils'], function (utils) {
 
     return {
 
-        _name: 'contModel', //model name
+        _name: 'fooModel', //model name
 
         _defaults: { //default backbone attributes
             age: '',
@@ -33,53 +29,10 @@ define([
 
         _validateBeforeSet: ['level'],
 
-        _services: [
-            {
-                id: 'products',
-                service: products,
-                method: 'getProducts',
-                params: { code: 1 },
-                set: 'products'
-            },/*
-            {
-                id: 'products',
-                service: products,
-                method: 'getProductsConfig',
-                params: { code: 2 },
-                set: 'productsConfig'
-            },*/
-            {
-                id: 'movements',
-                service: movements,
-                method: 'getMovements',
-                onSuccess: 'onSuccessMovements'
-            }
-        ],
-
-        _initialServices: ['products', 'movements'],
-
-        onSuccessMovements: function (data, service) {
-            console.debug(data, service);
-        },
-
         _modelEvents: { //model events actions
             'change:user': [
                 { action: 'setAttr', fromAttr: 'user', toAttr: 'userMirror' }
-            ],
-            'serviceInProgress:products': [
-                { action: 'runModelMethod', method: 'onServiceProgressProducts' }
-            ],
-            'serviceInProgress': [
-                { action: 'runModelMethod', method: 'onServiceProgress' }
             ]
-        },
-
-        onServiceProgressProducts: function (state) {
-            console.debug('onServiceProgressProducts:', state);
-        },
-
-        onServiceProgress: function (state) {
-            console.debug('onServiceProgress:', state);
         },
 
         _validations: [
@@ -125,7 +78,7 @@ define([
         ],
 
         submit: function () {
-            utils.reports.create('contModel: submit model');
+            utils.reports.create('fooModel: submit model');
         }
 
     };

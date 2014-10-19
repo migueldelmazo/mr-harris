@@ -1,31 +1,31 @@
 define([
     'utils',
-    'packages/subContView',
-    'packages/contModel'
-], function (utils, subContView, contModel) {
+    'packages/tests/fooChildView',
+    'packages/tests/fooModel'
+], function (utils, fooChildView, fooModel) {
 
     return {
 
-        _name: 'contView', //view name
+        _name: 'fooView', //view name
 
-        _template: '#cont-view', //backbone template
+        _template: '#foo-view', //backbone template
 
         _regions: { //marionette regions
-            subCont: 'subCont'
+            fooChild: 'fooChild'
         },
 
         _initialViewsInRegions: [ //show this regions on init
             {
-                id: 'subCont',
-                region: 'subCont',
-                view: subContView,
+                id: 'fooChild',
+                region: 'fooChild',
+                view: fooChildView,
                 listenToView: { //listening triggers of this view
                     autocomplete: [
                         { action: 'set', to: 'model', toItem: 'user', value: 'usuario' },
                         { action: 'set', to: 'model', toItem: 'name', value: 'nombre' },
                         { action: 'set', to: 'model', toItem: 'mail', value: 'mail@mail.org' },
                         { action: 'set', to: 'model', toItem: 'age', value: '20' },
-                        { action: 'runViewMethod', method: 'oneMethod', value: 'executed from subContView' },
+                        { action: 'runViewMethod', method: 'oneMethod', value: 'executed from fooChildView' },
                         { action: 'activateAndShowModelValidations', attrs: ['user', 'mail'] }
                     ]
                 }
@@ -33,10 +33,10 @@ define([
         ],
 
         oneMethod: function (action, value) {
-            utils.reports.create('contView: oneMethod ' + value);
+            utils.reports.create('fooView: oneMethod ' + value);
         },
 
-        _model: contModel, //model of view
+        _model: fooModel, //model of view
 
         _modelBinds: [ //items bind between model and dom
             { model: 'user', dom: 'user' }, 'name', 'mail', 'age', 'level.level'
@@ -47,12 +47,12 @@ define([
                 { action: 'set', from: 'dom', to: 'model', fromItem: 'user', toItem: 'user' },
                 { action: 'activateModelValidations', attrs: 'user' },
                 { action: 'showModelValidations' },
-                { action: 'runViewMethod', method: 'oneMethod', value: 'contView: runViewMethod' },
-                { action: 'runModelMethod', method: 'oneMethod', value: 'contView: runModelMethod' },
+                { action: 'runViewMethod', method: 'oneMethod', value: 'fooView: runViewMethod' },
+                { action: 'runModelMethod', method: 'oneMethod', value: 'fooView: runModelMethod' },
                 { action: 'triggerToModel', ev: 'trySet:user' },
                 { action: 'triggerToApp', ev: 'userChanged', from: 'model', fromItem: 'user' },
-                { action: 'updateChild', viewName: 'subContView', from: 'model', fromFn: 'toJSON' },
-                { action: 'createReport', value: 'contView: keyup user' }
+                { action: 'updateChild', viewName: 'fooChildView', from: 'model', fromFn: 'toJSON' },
+                { action: 'createReport', value: 'fooView: keyup user' }
             ],
             'keyup [js="mail"]': [
                 { action: 'activateAndShowModelValidations', attrs: 'mail' }
@@ -71,14 +71,14 @@ define([
 
         _modelEvents: { //model events actions
             'trySet:user': [
-                { action: 'createReport', value: 'contView: trySet user' }
+                { action: 'createReport', value: 'fooView: trySet user' }
             ],
             'set:user': [
                 { action: 'toggle', el: ['label-mail', 'label-age'], from: 'model', fromItem: 'user' },
                 { action: 'toggleClass', from: 'model', fromItem: 'user', to: 'dom', el: 'label-user', className: 'selected' }
             ],
             'change:user': [
-                { action: 'createReport', value: 'contView: set user' }
+                { action: 'createReport', value: 'fooView: set user' }
             ],
             'set:level.level': [
                 { action: 'toggleProperty', from: 'model', fromFn: 'validate', to: 'dom', el: 'submit', property: 'disabled' }

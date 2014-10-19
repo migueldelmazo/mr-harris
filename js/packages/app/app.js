@@ -1,8 +1,8 @@
 define([
     'utils',
-    'packages/appConfig',
-    'packages/appRouter',
-    'packages/appView',
+    'packages/app/appConfig',
+    'packages/app/appRouter',
+    'packages/app/appView',
     'prototype/application',
     'prototype/applicationEvents',
     'prototype/applicationNavigate',

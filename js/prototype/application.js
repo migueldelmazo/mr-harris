@@ -12,6 +12,7 @@ define(['utils'], function (utils) {
 
         initAppRouter = function (options) {
             this.appRouter = utils.classes.instance('appRouter', options.appRouter);
+            this.appRouter.app = this; //cyclic dependency
         },
 
         initAppView = function () {

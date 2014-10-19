@@ -1,10 +1,10 @@
-define(['packages/contModel'], function (contModel) {
+define([], function () {
 
     return {
 
-        _name: 'subContView', //view name
+        _name: 'fooChildView', //view name
 
-        _template: '#sub-cont-view', //backbone template
+        _template: '#sub-foo-view', //backbone template
 
         _domEvents: {
             'click': [

@@ -1,8 +1,7 @@
 define([
     'utils',
-    'js/packages/headerView',
-    'js/packages/contView'
-], function (utils, headerView, contView) {
+    'packages/header/headerView'
+], function (utils, headerView) {
 
     return {
 
@@ -25,11 +24,6 @@ define([
                 id: 'header', //id of view
                 region: 'header',
                 view: headerView
-            },
-            {
-                id: 'cont',
-                view: contView
-                //region: 'cont' not specify, the region to use _defaultRegion value
             }
         ]
 

@@ -10,7 +10,7 @@ define(['utils'], function (utils) {
                 if (Backbone.history.fragment === hash) {
                     Backbone.history.loadUrl(hash);
                 } else {
-                    Backbone.history.navigate(hash);
+                    Backbone.history.navigate(hash, { trigger: true });
                 }
             }, 0);
         },

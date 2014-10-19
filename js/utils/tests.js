@@ -43,7 +43,7 @@ define([], function () {
         runNextInstance = function () {
             instancesIndex += 1;
             if (instancesIndex < _.size(instances)) {
-                if (instances[instancesIndex]._events) { //if test has _events, is a zombie
+                if (instances[instancesIndex].events) { //if test has _events, is a zombie
                     runNextInstance();
                 } else {
                     instances[instancesIndex].runTest();

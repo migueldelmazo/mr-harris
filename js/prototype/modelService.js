@@ -9,11 +9,18 @@ define(['utils'], function (utils) {
             });
         },
 
+        //parse array initial services
+        parseInitialServices = function () {
+            this._initialServices = utils.parseArray(this._initialServices);
+        },
+
         //service resolve callback
         onServiceResolve = function (service, data) {
+            //store response data
+            service.responseData = data;
             //check service options
-            if (service.set) {
-                this.set(service.set, data);
+            if (service.setModelAttr) {
+                this.set(service.setModelAttr, data);
             }
             if (service.onSuccess) {
                 utils.foo(this, service.onSuccess, undefined, data, service);
@@ -23,6 +30,7 @@ define(['utils'], function (utils) {
 
         //service reject callback
         onServiceReject = function (service) {
+            //clean service.responseData
             triggerServiceInProgress.call(this, service);
         },
 
@@ -55,6 +63,7 @@ define(['utils'], function (utils) {
         //run initial services
         initServices: function () {
             parseServices.call(this);
+            parseInitialServices.call(this);
             _.each(this._services, function (service) {
                 if (this._initialServices.indexOf(service.id) >= 0) {
                     this.callService(service);
@@ -66,13 +75,31 @@ define(['utils'], function (utils) {
         callService: function (service) {
             var that = this;
             triggerServiceInProgress.call(this, service);
-            utils.services.run(service)
+            return utils.services.run(service)
                 .done(function (data) {
                     onServiceResolve.call(that, service, data);
                 })
                 .fail(function () {
                     onServiceReject.call(that, service);
                 });
+        },
+
+        callServiceById: function (serviceId) {
+            var service = _.find(this._services, function (_service) {
+                return _service.id === serviceId;
+            });
+            return this.callService(service);
+        },
+
+        servicesInProgressCounter: function () {
+            return _.size(this._serviceInProgress);
+        },
+
+        getServiceData: function (serviceId, attrs) {
+            var service = _.find(this._services, function (service) {
+                return service.id === serviceId;
+            }) || {};
+            return attrs ? utils.foo(service.responseData, attrs) : service.responseData;
         }
 
     });
