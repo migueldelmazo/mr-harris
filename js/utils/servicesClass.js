@@ -51,6 +51,14 @@ define(['utils'], function (utils) {
             };
         },
 
+        triggerServiceEvents = function () {
+            var serviceEvent = this.serviceEvent;
+            if (serviceEvent) {
+                this.app.trigger('service:' + serviceEvent);
+
+            }
+        },
+
         //extend service class
         extendPrototype = function (serviceClass) {
             _.extend(serviceClass.prototype, {
@@ -73,6 +81,7 @@ define(['utils'], function (utils) {
                         if (validateService.call(that, that.validateAfterSend)) { //validate after send
                             parse.call(that, that.parseAfterSend); //parse after send
                             that.promise.resolve(that.responseData); //resolve promise
+                            triggerServiceEvents.call(that);
                         }
                     }, 0);
                 },
@@ -96,11 +105,11 @@ define(['utils'], function (utils) {
                     return this.promise;
                 },
 
-                removeCacheAfter: function (miliseconds, serviceKey) {
+                removeCacheAfter: function (miliseconds, serviceOptions) {
                     this._removeCacheAfter = this._removeCacheAfter || [];
                     this._removeCacheAfter.push({
                         miliseconds: miliseconds,
-                        serviceKey: serviceKey
+                        serviceOptions: serviceOptions
                     });
                 },
 
