@@ -1,7 +1,7 @@
 define([
     'utils',
-    'packages/tests/fooChildView',
-    'packages/tests/fooModel'
+    'packages/tests/fooChild.view',
+    'packages/tests/foo.model'
 ], function (utils, fooChildView, fooModel) {
 
     return {
@@ -38,7 +38,7 @@ define([
 
         _model: {
             model: fooModel, //model of view
-        }
+        },
 
         _modelBinds: [ //items bind between model and dom
             { model: 'user', dom: 'user' }, 'name', 'mail', 'age', 'level.level'

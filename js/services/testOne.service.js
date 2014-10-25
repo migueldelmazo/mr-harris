@@ -1,6 +1,6 @@
 define([], function () {
 
-    var url = 'serviceTestOne.json';
+    var url = 'testOne.json';
 
     return {
 

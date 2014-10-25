@@ -1,6 +1,6 @@
 define([
-    'packages/tests/fooView',
-    'packages/tests/serviceView'
+    'packages/tests/foo.view',
+    'packages/tests/service.view'
 ], function (fooView, serviceView) {
 
     return {

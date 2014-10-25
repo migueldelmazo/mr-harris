@@ -1,6 +1,6 @@
 define([
     'utils',
-    'packages/header/headerView'
+    'packages/header/header.view'
 ], function (utils, headerView) {
 
     return {

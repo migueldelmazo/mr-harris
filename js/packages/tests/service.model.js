@@ -1,6 +1,6 @@
 define([
     'utils',
-    'services/serviceTestOne'
+    'services/testOne.service'
 ], function (utils, serviceTestOne) {
 
     return {

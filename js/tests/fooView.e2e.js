@@ -1,6 +1,6 @@
 define(['utils'], function (utils) {
 
-    //end to end test for fooView and fooModel
+    //end to end test for foo.view and foo.model
 
     return {
 

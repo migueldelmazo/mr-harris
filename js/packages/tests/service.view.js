@@ -1,6 +1,6 @@
 define([
     'utils',
-    'packages/tests/serviceModel'
+    'packages/tests/service.model'
 ], function (utils, serviceModel) {
 
     return {
