@@ -73,14 +73,4 @@ define(['utils'], function (utils) {
         }
 
     });
-
-    _.extend(Marionette.LayoutView.prototype, {
-
-        serializeData: function () {
-            if (this._modelInstance) {
-                return this._modelInstance.toJSON();
-            }
-        }
-
-    });
 });

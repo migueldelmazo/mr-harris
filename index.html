@@ -18,49 +18,49 @@
             </script>
             <script type="text/template" id="foo-view">
                 <div class="row3">
-                    <h2 js='contenteditable'>Form</h2>
+                    <h2 js='contenteditable'><%= i18n.form %></h2>
                     <form js="form">
                         <label js="label-user">
-                            <span class="label">User:</span>
+                            <span class="label"><%= i18n.user %>:</span>
                             <input js="user" js-validation-mirror="user" type="text" value="<%= user %>" />
                             <ul js-validation="user" class="validation" />
                         </label>
                         <label js="label-level.level">
-                            <span class="label">Level.level:</span>
+                            <span class="label"><%= i18n.levelLevel %>:</span>
                             <input js="level.level" type="text" value="<%= level.level %>" />
                             <ul js-validation="level.level" class="validation" />
                         </label>
                         <label js="label-name">
-                            <span class="label">Name:</span>
+                            <span class="label"><%= i18n.name %>:</span>
                             <input js="name" type="text" value="<%= name %>" />
                             <ul js-validation="name" class="validation" />
                         </label>
                         <label js="label-mail">
-                            <span class="label">Mail:</span>
+                            <span class="label"><%= i18n.mail %>:</span>
                             <input js="mail" type="text" value="<%= mail %>" />
                             <ul js-validation="mail" class="validation" />
                         </label>
                         <label js="label-age">
-                            <span class="label">Age:</span>
+                            <span class="label"><%= i18n.age %>:</span>
                             <input js="age" type="text" value="<%= age %>" />
                             <ul js-validation="age" class="validation" />
                         </label>
-                        <input js="submit" type="submit" />
+                        <input js="submit" type="submit" value="<%= i18n.submit %>" />
                     </form>
                     <div region="fooChild" />
                 </div>
             </script>
             <script type="text/template" id="sub-foo-view">
-                <p>Click me for autocomplete</p>
+                <p><%= i18n.clickMe %></p>
                 <code js="code"></code>
             </script>
             <script type="text/template" id="service-view">
                 <h2>Service</h2>
                  <form js="form">
-                        <button js="simple-service">Simple service</button>
-                        <button js="double-service">Double service</button>
-                        <button js="validate-and-parse-service">Validate and parse service</button>
-                    </form>
+                    <button js="simple-service"><%= i18n.simpleService %></button>
+                    <button js="double-service"><%= i18n.doubleService %></button>
+                    <button js="validate-and-parse-service"><%= i18n.validateAndParseService %></button>
+                </form>
             </script>
         </div>
     </body>

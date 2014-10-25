@@ -20,4 +20,14 @@ define(['utils'], function (utils) {
         }
 
     });
+
+    _.extend(Marionette.LayoutView.prototype, {
+
+        serializeData: function () {
+            var modelData = (this._modelInstance) ? this._modelInstance.toJSON() : {},
+                i18nData = { i18n: this._i18n || {}};
+            return $.extend(true, modelData, i18nData);
+        }
+
+    });
 });
