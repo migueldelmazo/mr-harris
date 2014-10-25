@@ -22,27 +22,27 @@
                     <form js="form">
                         <label js="label-user">
                             <span class="label">User:</span>
-                            <input js="user" js-validation-mirror="user" type="text" />
+                            <input js="user" js-validation-mirror="user" type="text" value="<%= user %>" />
                             <ul js-validation="user" class="validation" />
                         </label>
                         <label js="label-level.level">
                             <span class="label">Level.level:</span>
-                            <input js="level.level" type="text" />
+                            <input js="level.level" type="text" value="<%= level.level %>" />
                             <ul js-validation="level.level" class="validation" />
                         </label>
                         <label js="label-name">
                             <span class="label">Name:</span>
-                            <input js="name" type="text" />
+                            <input js="name" type="text" value="<%= name %>" />
                             <ul js-validation="name" class="validation" />
                         </label>
                         <label js="label-mail">
                             <span class="label">Mail:</span>
-                            <input js="mail" type="text" />
+                            <input js="mail" type="text" value="<%= mail %>" />
                             <ul js-validation="mail" class="validation" />
                         </label>
                         <label js="label-age">
                             <span class="label">Age:</span>
-                            <input js="age" type="text" />
+                            <input js="age" type="text" value="<%= age %>" />
                             <ul js-validation="age" class="validation" />
                         </label>
                         <input js="submit" type="submit" />
