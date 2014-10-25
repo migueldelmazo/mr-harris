@@ -5,6 +5,8 @@
     "testsLibraries": ["js/utils/testsJasmine"],
     "appWaitsToTestToBeLoaded": true,
 
+    "appInMaintenanceMode": true,
+
     "requireWakeupConf": {
         "baseUrl": "./",
         "paths": {

@@ -30,8 +30,11 @@ define(['utils'], function (utils) {
 
         //service reject callback
         onServiceReject = function (service, responseError) {
+            var serviceErrorCallback = service['onError' + responseError.code];
             service.responseData = undefined;
-            utils.foo(this, service['onError' + responseError.code], undefined, responseError, service);
+            if (serviceErrorCallback) {
+                service[serviceErrorCallback]();
+            }
             triggerServiceInProgress.call(this, service);
         },
 

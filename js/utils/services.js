@@ -51,12 +51,21 @@ define([], function () {
          */
 
         sendAjax = function (serviceOptions) {
-            $.ajax(utils.config.get('ajaxUrl') + serviceOptions.url, {
-                data: serviceOptions.params,
-                type: serviceOptions.type
-            })
-                .done(onAjaxSuccess.bind(this, serviceOptions))
-                .fail(onAjaxError.bind(this, serviceOptions));
+            if (serviceOptions.type !== 'GET' && utils.config.get('appInMaintenanceMode')) {
+                //check maintenance mode
+                onAjaxError.call(this, serviceOptions, {
+                    type: 'warning',
+                    code: 'appInMaintenanceMode'
+                });
+            } else {
+                //send ajax
+                $.ajax(utils.config.get('ajaxUrl') + serviceOptions.url, {
+                    data: serviceOptions.params,
+                    type: serviceOptions.type
+                })
+                    .done(onAjaxSuccess.bind(this, serviceOptions))
+                    .fail(onAjaxError.bind(this, serviceOptions));
+            }
         },
 
         onAjaxSuccess = function (serviceOptions, responseData) {
