@@ -6,10 +6,11 @@ define(['utils'], function (utils) {
         initOptions = function (options) {
             options = options || {};
             this.app = options.app;
-            this._userAttrsChange = [];
-            this._validations = this._validations || [];
+            this._appEvents = this._appEvents || {};
             this._services = this._services || [];
             this._serviceInProgress = [];
+            this._userAttrsChange = [];
+            this._validations = this._validations || [];
             getDefaultsAttrs.call(this, options);
         },
 
@@ -17,7 +18,12 @@ define(['utils'], function (utils) {
             this.defaults = utils.storage.appInstanceGet('model:' + options.viewName + ':' +this._name) || this._defaults || {};
         },
 
-        //listen model events
+        initAppEvents = function () {
+            _.each(this._appEvents, function (actions, eventName) {
+                this.app.vent.on(eventName, onModelEvents.bind(this, actions));
+            }, this);
+        },
+
         initModelEvents = function () {
             _.each(this._modelEvents, function (actions, eventName) {
                 this.on(eventName, onModelEvents.bind(this, actions));
@@ -39,6 +45,7 @@ define(['utils'], function (utils) {
             if (this instanceof Backbone.Model) {
                 initOptions.call(this, options);
                 constructorModel.apply(this, arguments);
+                initAppEvents.call(this);
                 initModelEvents.call(this);
                 utils.foo(this, 'initServices');
             }
