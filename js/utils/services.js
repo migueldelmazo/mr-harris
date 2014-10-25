@@ -53,8 +53,7 @@ define([], function () {
         sendAjax = function (serviceOptions) {
             $.ajax(utils.config.get('ajaxUrl') + serviceOptions.url, {
                 data: serviceOptions.params,
-                type: serviceOptions.type,
-                context: this
+                type: serviceOptions.type
             })
                 .done(onAjaxSuccess.bind(this, serviceOptions))
                 .fail(onAjaxError.bind(this, serviceOptions));
