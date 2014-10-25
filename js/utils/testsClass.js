@@ -88,12 +88,12 @@ define(['utils'], function (utils) {
 
         //wait an application event or time to run next action
         waitNextAction = function (action) {
-            var DEFAULT_WAITING_TIME = 100;
             if (this.running) {
                 if (action.waitEvent) {
                     this.app.appEventOnce(action.waitEvent, runAction, this);
                 } else {
-                    setTimeout(runAction.bind(this), action.wait || DEFAULT_WAITING_TIME);
+                    setTimeout(runAction.bind(this),
+                        action.wait || utils.config.get('tests.waitNextAction.defaultWaitingTime', 50));
                 }
             }
         },
