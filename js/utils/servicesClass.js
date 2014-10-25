@@ -79,17 +79,19 @@ define(['utils'], function (utils) {
                     setTimeout(function () { //we wait 0 seconds to simulate an ajax call and resolve service
                         that.responseData = responseData;
                         if (validateService.call(that, that.validateAfterSend)) { //validate after send
-                            parse.call(that, that.parseAfterSend); //parse after send
-                            that.promise.resolve(that.responseData); //resolve promise
+                            parse.call(that, that.parseAfterSend);
+                            that.promise.resolve(that.responseData);
                             triggerServiceEvents.call(that);
                         }
                     }, 0);
                 },
 
-                reject: function () {
+                reject: function (responseError) {
                     var that = this;
                     setTimeout(function () { //we wait 0 seconds to simulate an ajax call and reject service
-                        that.promise.reject();
+                        that.responseError = responseError;
+                        parse.call(that, that.parseErrorAfterSend);
+                        that.promise.reject(that.responseError);
                     }, 0);
                 },
 

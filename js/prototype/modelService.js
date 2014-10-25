@@ -29,8 +29,9 @@ define(['utils'], function (utils) {
         },
 
         //service reject callback
-        onServiceReject = function (service) {
-            //clean service.responseData
+        onServiceReject = function (service, responseError) {
+            service.responseData = undefined;
+            utils.foo(this, service['onError' + responseError.code], undefined, responseError, service);
             triggerServiceInProgress.call(this, service);
         },
 
@@ -74,13 +75,17 @@ define(['utils'], function (utils) {
         //call ajax service
         callService: function (service) {
             var that = this;
+            service.inProgress = true;
             triggerServiceInProgress.call(this, service);
             return utils.services.run(service)
-                .done(function (data) {
-                    onServiceResolve.call(that, service, data);
+                .done(function (responseData) {
+                    onServiceResolve.call(that, service, responseData);
                 })
-                .fail(function () {
-                    onServiceReject.call(that, service);
+                .fail(function (responseError) {
+                    onServiceReject.call(that, service, responseError);
+                })
+                .always(function () {
+                    service.inProgress = false;
                 });
         },
 

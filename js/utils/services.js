@@ -31,7 +31,7 @@ define([], function () {
             _.each(services, function (serviceInstance, index) {
                 if (areServiceOptions(serviceInstance.getServiceOptions(), serviceOptions)) {
                     //resolve (or reject) all service with this services options
-                    !resolve ? serviceInstance.resolve(responseData) : serviceInstance.reject(responseData);
+                    !!resolve ? serviceInstance.resolve(responseData) : serviceInstance.reject(responseData);
                     services[index] = undefined; //set 'service' as undefined
                 }
             });
@@ -61,13 +61,20 @@ define([], function () {
 
         onAjaxSuccess = function (serviceOptions, responseData) {
             setResponseDataInCachedService(serviceOptions, responseData);
-            resolveMatchingServices(serviceOptions, responseData);
+            resolveMatchingServices(serviceOptions, responseData, true);
         },
 
         onAjaxError = function (serviceOptions, responseError) {
-            this.removeCache(serviceOptions);
-            //TODO: parse ajax errors
-            resolveMatchingServices(serviceOptions, responseError, false);
+            this.removeCachedService(serviceOptions);
+            resolveMatchingServices(serviceOptions, parseAjaxError(responseError), false);
+        },
+
+        parseAjaxError = function (responseError) {
+            return {
+                type: 'error',
+                code: responseError.status,
+                msg: responseError.statusText
+            };
         },
 
         /*
