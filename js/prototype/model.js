@@ -6,11 +6,15 @@ define(['utils'], function (utils) {
         initOptions = function (options) {
             options = options || {};
             this.app = options.app;
-            this.defaults = this._defaults || {};
             this._userAttrsChange = [];
             this._validations = this._validations || [];
             this._services = this._services || [];
             this._serviceInProgress = [];
+            getDefaultsAttrs.call(this, options);
+        },
+
+        getDefaultsAttrs = function (options) {
+            this.defaults = utils.storage.appInstanceGet('model:' + options.viewName + ':' +this._name) || this._defaults || {};
         },
 
         //listen model events
