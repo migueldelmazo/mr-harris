@@ -1,8 +1,5 @@
 define([], function () {
 
-    //TODO: hacer removeAjaxCache
-    //TODO: gestionar errores xhr
-
     var /*
          *  util: service
          *
@@ -11,140 +8,115 @@ define([], function () {
          *
          *  Flow:
          *  - Someone running the method 'run' that:
-         *    - Instance object of type 'service'.
-         *    - Run 'initialize' instance method, to create its 'serviceKey'
-         *    - Instance should call public method 'callAjax'.
-         *    - 'callAjax' checks cached data for this 'serviceKey'.
+         *    - Instance object of type 'service'
+         *    - Run 'initialize' instance method, to create its 'serviceOptions'
+         *    - Instance should call public method 'callAjax'
+         *    - 'callAjax' checks cached data for this 'serviceOptions'
          *      - If no cached data, call ajax API
          *  - When an ajax call answered successfully:
-         *    - Set responseData in 'cache'.
-         *    - We resolve all services have with this 'serviceKey', and remove this services.
+         *    - Set responseData in cached service
+         *    - We resolve all services with this 'serviceOptions', and remove this services
          *  - When a call ajax responds with error:
-         *    - We remove the 'serviceKey' in 'cache' of this service.
-         *    - We reject all services have with this 'serviceKey'.
+         *    - We reject all services with this 'serviceOptions'
+         *    - We remove the cached service in 'cache' of this service
          */
 
-        //services storage
         services = window.z_services = [],
 
-        //called after ajax response, run resolve service method
-        resolveService = function (serviceKey, responseData) {
-            _.each(services, function (service) {
-                if (isEqualServiceKey(service.getServiceKey(), serviceKey)) {
-                    service.resolve(responseData);
-                    removeService(serviceKey);
-                }
-            });
+        storeService = function (serviceInstance) {
+            services.push(serviceInstance);
         },
 
-        //called after ajax response, run reject service method
-        rejectService = function (serviceKey, responseError) {
-            _.each(services, function (service) {
-                if (isEqualServiceKey(service.getServiceKey(), serviceKey)) {
-                    service.reject(responseError);
-                    removeService(serviceKey);
-                }
-            });
-        },
-
-        //remove resolved service
-        removeService = function (serviceKey) {
-            //find service and set as undefined
-            _.each(services, function (service, index) {
-                if (service === serviceKey) {
-                    services[index] = undefined;
+        resolveMatchingServices = function (serviceOptions, responseData, resolve) {
+            _.each(services, function (serviceInstance, index) {
+                if (areServiceOptions(serviceInstance.getServiceOptions(), serviceOptions)) {
+                    //resolve (or reject) all service with this services options
+                    !resolve ? serviceInstance.resolve(responseData) : serviceInstance.reject(responseData);
+                    services[index] = undefined; //set 'service' as undefined
                 }
             });
             services = _.compact(services); //remove undefined services
         },
 
-        //check key attributes between two services
-        isEqualServiceKey = function (obj1, obj2) {
+        areServiceOptions = function (obj1, obj2) {
             return _.isEqual(obj1.params, obj2.params) && obj1.type === obj2.type && obj1.url === obj2.url;
         },
 
         /*
          *  util: services > ajax
          *
-         *  'callAjax' send ajax call to API.
-         *  'onAjaxSuccess' set 'responseData' in 'cache' and resolve services.
-         *  'onAjaxError' remove 'serviceKey' fron 'cache' and reject service.
+         *  'sendAjax' send ajax call to API
+         *  'onAjaxSuccess' set 'responseData' in 'cache' and resolve services
+         *  'onAjaxError' remove cached service from 'cache' and reject service
          */
 
-        //send ajax call
-        callAjax = function (serviceKey) {
-            $.ajax(utils.config.get('ajaxUrl') + serviceKey.url, {
-                data: serviceKey.params,
-                type: serviceKey.type,
+        sendAjax = function (serviceOptions) {
+            $.ajax(utils.config.get('ajaxUrl') + serviceOptions.url, {
+                data: serviceOptions.params,
+                type: serviceOptions.type,
                 context: this
             })
-                .done(onAjaxSuccess.bind(this, serviceKey))
-                .fail(onAjaxError.bind(this, serviceKey));
+                .done(onAjaxSuccess.bind(this, serviceOptions))
+                .fail(onAjaxError.bind(this, serviceOptions));
         },
 
-        //ajax success callback, store responseData in cache and resolve services
-        onAjaxSuccess = function (serviceKey, responseData) {
-            setCacheData(serviceKey, responseData);
-            resolveService(serviceKey, responseData);
+        onAjaxSuccess = function (serviceOptions, responseData) {
+            setResponseDataInCachedService(serviceOptions, responseData);
+            resolveMatchingServices(serviceOptions, responseData);
         },
 
-        //ajax error callback, remove serviceKey from cache and reject services
-        onAjaxError = function (serviceKey, responseError) {
-            this.removeCache(serviceKey);
-            rejectService(serviceKey, responseError); //TODO: manage ajax errors
+        onAjaxError = function (serviceOptions, responseError) {
+            this.removeCache(serviceOptions);
+            //TODO: parse ajax errors
+            resolveMatchingServices(serviceOptions, responseError, false);
         },
 
         /*
          *  util: service > cache
          *
-         *  'cache' is an array in which we are stored objects called 'serviceKey'.
-         *  We use 'serviceKey' as a key to relate it to the services instances.
-         *  'serviceKey' has this sctructure:
+         *  'cache' is an array in which we are stored objects called 'serviceOptions'
+         *  We use 'serviceOptions' as a key to relate it to the services instances
+         *  'serviceOptions' has this sctructure:
          *  {
          *      url: 'my-url.json' //ajax url
          *      method: 'GET', //ajax method, maybe GET, POST, PUT...
          *      params: { myParams: 'foo' }, //ajax params to send to API
-         *      responseData: {} //response data of ajax call. Only after ajax call response successfully.
+         *      responseData: {}, //response data of ajax call. Only after ajax call response successfully
+         *      inProgress: boolean //current state
          *  }
          *
-         *  When a service is created, 'serviceKey' is checked whether there is in the 'cache'.
-         *  If there is in 'cache', we resolve service instance with 'responseData'.
-         *  If not, the 'serviceKey' is cached and service instance waits for for ajax call finished.
+         *  When a service is created, 'serviceOptions' is checked whether there is in the 'cache'
+         *  If there is in 'cache', we resolve service instance with 'responseData'
+         *  If not, the 'serviceOptions' is cached and service instance waits for ajax call finished
          *
-         *  When an ajax call finishes, we store its 'responseData' in the corresponding 'serviceKey' from the 'cache'.
+         *  When an ajax call finishes, we store its 'responseData' in the corresponding 'serviceOptions' from the 'cache',
+         *  and resolve or reject all services instances with this 'serviceOptions'
          */
 
-        //cache storage
         cache = window.z_cache = [],
 
-        //find service in cache whit this serviceKey
-        findCacheService = function (serviceKey) {
-            return _.find(cache, function (cacheService) {
-                return isEqualServiceKey(cacheService, serviceKey);
+        findCachedService = function (serviceOptions) {
+            return _.find(cache, function (cachedItem) {
+                return areServiceOptions(cachedItem, serviceOptions);
             }) || {};
         },
 
-        //store service in cache if not exists, and return it
-        storeServiceInCache = function (serviceKey) {
-            var service = findCacheService(serviceKey);
-            if (_.isEmpty(service)) {
-                cache.push(utils.clone(serviceKey)); //if not exist clone and push serviceKey in cache
-            }
-            return findCacheService(serviceKey);
+        storeServiceInCache = function (serviceOptions) {
+            var item = utils.clone(serviceOptions);
+            item.inProgress = true; //all services start in progress state
+            cache.push(item);
         },
 
-        //set ajax response data in cache
-        setCacheData = function (serviceKey, responseData) {
-            var service = findCacheService(serviceKey);
-            service.responseData = responseData;
+        setResponseDataInCachedService = function (serviceOptions, responseData) {
+            var cachedService = findCachedService(serviceOptions)
+            cachedService.inProgress = false; //when ajax call returns we change this state
+            cachedService.responseData = responseData;
         },
 
-        //remove service from cache with serviceKey
-        removeServiceCache = function (serviceKey) {
-            //find service and set as undefined
-            _.each(cache, function (cacheService, index) {
-                if (serviceKey === undefined || isEqualServiceKey(cacheService, serviceKey)) {
-                    cache[index] = undefined;
+        removeCachedService = function (serviceOptions) {
+            _.each(cache, function (cachedService, index) {
+                if (serviceOptions === undefined || areServiceOptions(cachedService, serviceOptions)) {
+                    cache[index] = undefined; //find service and set as undefined
                 }
             });
             cache = _.compact(cache); //remove undefined services
@@ -158,33 +130,29 @@ define([], function () {
             utils = _utils; //store utils
         },
 
-        /*
-         *  public service methods
-         */
-
-        //instance, run service and return promise
         run: function (serviceDefinition) {
-            var instance = utils.classes.instance('service', serviceDefinition.service, serviceDefinition); //instance service
-            services.push(instance); //store services
-            instance.initialize();
-            return instance.getPromise();
+            var serviceInstance = utils.classes.instance('service', serviceDefinition.service, serviceDefinition);
+            storeService(serviceInstance);
+            serviceInstance.initialize();
+            return serviceInstance.getPromise();
         },
 
-        //send ajax call or resolve service with cached response data
-        callAjax: function (serviceKey) {
-            var service = storeServiceInCache(serviceKey),
-                responseData = service.responseData;
-            if (responseData) { //if exists cached response data we resolve this service
-                resolveService(serviceKey, responseData);
-            } else if (!service.inProgress) { //else callAjax and set inProgress to prevent an other ajax call
-                service.inProgress = true;
-                callAjax.call(this, serviceKey, service);
+        callAjax: function (serviceOptions) {
+            var cachedItem = findCachedService(serviceOptions);
+            if (cachedItem.responseData) {
+                resolveMatchingServices(serviceOptions, cachedItem.responseData);
+            } else if (!cachedItem.inProgress) {
+                storeServiceInCache(serviceOptions);
+                sendAjax.call(this, serviceOptions);
             }
         },
 
-        //remove a service from cache
-        removeCache: function (serviceKey) {
-            removeServiceCache(serviceKey);
+        removeCachedService: function (serviceOptions) {
+            removeCachedService(serviceOptions);
+        },
+
+        getCachedService: function (serviceOptions) {
+            return _.isEmpty(serviceOptions) ? cache : findCachedService(serviceOptions);
         }
 
     };

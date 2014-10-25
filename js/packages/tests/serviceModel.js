@@ -12,8 +12,13 @@ define([
                 id: 'serviceTestOne',
                 service: serviceTestOne,
                 method: 'getServiceTestOne',
-                params: { code: 1 },
                 setModelAttr: 'serviceTestOne'
+            },
+            {
+                id: 'serviceTestOneValidateAndParse',
+                service: serviceTestOne,
+                method: 'getServiceTestOneValidateAndParse',
+                params: { code: 1 }
             }
         ],
 

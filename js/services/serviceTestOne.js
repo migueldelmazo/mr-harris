@@ -8,34 +8,32 @@ define([], function () {
 
         getServiceTestOne: function () {
             this.url = url;
-            this.validateBeforeSend = 'getServiceTestOneValidateBeforeSend';
-            this.parseBeforeSend = 'getServiceTestOneParseBeforeSend';
-            this.validateAfterSend = 'getServiceTestOneValidateAfterSend';
-            this.parseAfterSend = 'getServiceTestOneParseAfterSend';
         },
 
-        getServiceTestOneValidateBeforeSend: function () {
-            return true;
-            //return !isNaN(this.params.code);
-        },
+        //getServiceTestOne
 
-        getServiceTestOneParseBeforeSend: function () {
-            //this.params.code += 1;
-        },
-
-        getServiceTestOneValidateAfterSend: function () {
-            return true;
-            //return _.isString(this.responseData.user);
-        },
-
-        getServiceTestOneParseAfterSend: function () {
-            //this.responseData.user += 1;
-        },
-
-        //getServiceTestOneConfig
-
-        getServiceTestOneConfig: function () {
+        getServiceTestOneValidateAndParse: function () {
             this.url = url;
+            this.validateBeforeSend = 'getServiceTestOneValidateAndParseValidateBeforeSend';
+            this.parseBeforeSend = 'getServiceTestOneValidateAndParseParseBeforeSend';
+            this.validateAfterSend = 'getServiceTestOneValidateAndParseValidateAfterSend';
+            this.parseAfterSend = 'getServiceTestOneValidateAndParseParseAfterSend';
+        },
+
+        getServiceTestOneValidateAndParseValidateBeforeSend: function () {
+            return this.params.code === 1;
+        },
+
+        getServiceTestOneValidateAndParseParseBeforeSend: function () {
+            this.params.code += 1;
+        },
+
+        getServiceTestOneValidateAndParseValidateAfterSend: function () {
+            return this.responseData.foo === 'foo';
+        },
+
+        getServiceTestOneValidateAndParseParseAfterSend: function () {
+            this.responseData.foo += 1;
         }
 
     };

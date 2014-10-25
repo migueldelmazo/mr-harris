@@ -13,7 +13,14 @@ define([
 
         _domEvents: {
             'click [js="simple-service"]': [
-                { action: 'runModelMethod', method: 'submitSimpleService' }
+                { action: 'runModelMethod', method: 'callServiceById', value: 'serviceTestOne' }
+            ],
+            'click [js="double-service"]': [
+                { action: 'runModelMethod', method: 'callServiceById', value: 'serviceTestOne' },
+                { action: 'runModelMethod', method: 'callServiceById', value: 'serviceTestOne' }
+            ],
+            'click [js="validate-and-parse-service"]': [
+                { action: 'runModelMethod', method: 'callServiceById', value: 'serviceTestOneValidateAndParse' }
             ]
         }
 

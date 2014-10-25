@@ -25,6 +25,14 @@ define(['utils'], function (utils) {
           *     - Else, we run 'incActionIndex'
           */
 
+        resetAjaxCalls = function () {
+            var that = this;
+            this.ajaxCalls = [];
+            $(document).ajaxComplete(function(ev, xhr, settings) {
+                that.ajaxCalls.push(settings);
+            });
+        },
+
         //reset initial options
         resetOptions = function () {
             this.actionIndex = 0;
@@ -45,6 +53,7 @@ define(['utils'], function (utils) {
 
         //run test action options
         runTestAction = function (action) {
+            resetAjaxCalls.call(this);
             if (action.navigate) {
                 this.app.navigate(action.navigate);
             }
@@ -152,7 +161,6 @@ define(['utils'], function (utils) {
                 sendResults: function (report) {
                     console.debug(report);
                     if (!report.result) {
-                        this.result = false;
                         utils.errors.throwWarning({
                             lib: 'testClass',
                             method: 'sendResults',

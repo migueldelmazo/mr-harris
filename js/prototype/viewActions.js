@@ -97,8 +97,8 @@ define(['utils'], function (utils) {
         },
 
         //model
-        runModelMethod: function (action) {
-            utils.foo(this._modelInstance, action.method);
+        runModelMethod: function (action, value) {
+            utils.foo(this._modelInstance, action.method, undefined, value);
         },
 
         triggerToModel: function (action) {
