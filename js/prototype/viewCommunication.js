@@ -21,7 +21,7 @@ define(['utils'], function (utils) {
     _.extend(Backbone.View.prototype, {
 
         appEventTrigger: function (event, data) {
-            this.app.vent.trigger(event, data);
+            this.app.appEventTrigger(event, data);
         },
 
         //hierarchy views communication

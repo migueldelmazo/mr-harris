@@ -50,7 +50,7 @@ define(['utils'], function (utils) {
 
         //app
         triggerToApp: function (action, value) {
-            this.app.vent.trigger(action.ev, value, action.params);
+            this.app.appEventTrigger(action.ev, value, action.params);
         },
 
         //dom

@@ -17,6 +17,10 @@ define(['utils'], function (utils) {
             this.vent.once(eventName, callback, context);
         },
 
+        appEventTrigger: function (eventName, callback, context) {
+            this.vent.trigger(eventName, callback, context);
+        },
+
         //logout the application
         logout: function () {
             utils.reports.create('logout app');
