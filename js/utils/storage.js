@@ -2,6 +2,7 @@ define([], function () {
 
     var LOCAL_ID = 'local_id',
         session = {},
+        appInstance = {},
         utils,
 
         //localStorage helpers
@@ -63,6 +64,20 @@ define([], function () {
         },
 
         sessionDel: function (key) {
+            delete session[key];
+        },
+
+        //appInstance: stored in memory, this disappears when page reloads
+
+        appInstanceGet: function (keys, byDefault) {
+            return utils.foo(appInstance, keys, byDefault);
+        },
+
+        appInstanceSet: function (key, value) {
+            appInstance[key] = value;
+        },
+
+        appInstanceDel: function (key) {
             delete session[key];
         }
 
