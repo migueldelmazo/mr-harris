@@ -59,7 +59,7 @@ define(['utils'], function (utils) {
         _initModel: function () {
             if (this._model) {
                 this._modelOptions = _.extend({}, this._modelOptions, { app: this.app });
-                this._modelInstance = utils.classes.instance('model', this._model, {}, getOptions.call(this));
+                this._modelInstance = utils.classes.instance('model', this._model.model, {}, getOptions.call(this));
                 setBindings.call(this);
                 initModelEvents.call(this);
             }

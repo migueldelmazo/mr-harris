@@ -9,7 +9,9 @@ define([
 
         _template: '#service-view', //backbone template
 
-        _model: serviceModel, //model of view
+        _model: {
+            model: serviceModel, //model of view
+        },
 
         _domEvents: {
             'click [js="simple-service"]': [

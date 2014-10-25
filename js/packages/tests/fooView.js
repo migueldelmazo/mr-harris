@@ -36,7 +36,9 @@ define([
             utils.reports.create('fooView: oneMethod ' + value);
         },
 
-        _model: fooModel, //model of view
+        _model: {
+            model: fooModel, //model of view
+        }
 
         _modelBinds: [ //items bind between model and dom
             { model: 'user', dom: 'user' }, 'name', 'mail', 'age', 'level.level'
