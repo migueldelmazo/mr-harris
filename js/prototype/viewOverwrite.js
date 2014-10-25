@@ -13,6 +13,10 @@ define(['utils'], function (utils) {
         onRender: function (options) {
             utils.foo(this, '_showInitialViewsInRegions');
             utils.foo(this, '_onRender', undefined, options);
+        },
+
+        onDestroy: function () {
+            utils.foo(this, 'onDestroyStoreModel');
         }
 
     });

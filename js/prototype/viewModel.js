@@ -1,6 +1,15 @@
 define(['utils'], function (utils) {
 
-    var //view and model binds
+    var //initModel helpers
+
+        getOptions = function () {
+            return {
+                app: this.app,
+                viewName: this._name
+            };
+        },
+
+        //view and model binds
 
         setBindings = function () {
             _.each(this._modelBinds, function (item) {
@@ -50,9 +59,26 @@ define(['utils'], function (utils) {
         _initModel: function () {
             if (this._model) {
                 this._modelOptions = _.extend({}, this._modelOptions, { app: this.app });
-                this._modelInstance = utils.classes.instance('model', this._model, {}, this._modelOptions);
+                this._modelInstance = utils.classes.instance('model', this._model, {}, getOptions.call(this));
                 setBindings.call(this);
                 initModelEvents.call(this);
+            }
+        },
+
+        onDestroyStoreModel: function () {
+            var modelInstance = this._modelInstance;
+            if (modelInstance) {
+                utils.storage.appInstanceSet('model:' + this._name + ':' + modelInstance._name, modelInstance.toJSON());
+            }
+        }
+
+    });
+
+    _.extend(Marionette.LayoutView.prototype, {
+
+        serializeData: function () {
+            if (this._modelInstance) {
+                return this._modelInstance.toJSON();
             }
         }
 
