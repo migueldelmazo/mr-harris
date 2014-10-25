@@ -51,6 +51,13 @@ define(['utils'], function (utils) {
                 }, this);
             }
             return result;
+        },
+
+        destroyRegionCurrentView = function (region) {
+            var currentView = this[region].currentView;
+            if (currentView) {
+                currentView.destroy();
+            }
         };
 
     //extend view class
@@ -83,6 +90,7 @@ define(['utils'], function (utils) {
             var instance;
             if (this instanceof Marionette.LayoutView) {
                 parseOptions.call(this, options);
+                destroyRegionCurrentView.call(this, options.region);
                 instance = utils.classes.instance(getClassType(options.view), options.view, options.viewOptions);
                 storeViewId.call(this, options, instance);
                 initListenTo.call(this, options, instance);
