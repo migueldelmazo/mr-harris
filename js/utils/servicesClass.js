@@ -20,17 +20,18 @@ define(['utils'], function (utils) {
      *  This options 'method' is responsible for resolving the promise.
      */
 
-    var constructor = function (options) {
-            parseConstructorOptions.call(this, options);
+    var constructor = function (service, options) {
+            parseConstructorOptions.call(this, service, options);
             initPromise.call(this);
         },
 
-        parseConstructorOptions = function (options) {
-            options = options || {};
+        parseConstructorOptions = function (service, options) {
+            service = service || {};
+            this.app = options.app;
             this.data = {};
-            this.method = options.method;
-            this.params = options.params || {};
-            this.type = options.type || 'GET';
+            this.method = service.method;
+            this.params = service.params || {};
+            this.type = service.type || 'GET';
         },
 
         initPromise = function () {
@@ -51,11 +52,10 @@ define(['utils'], function (utils) {
             };
         },
 
-        triggerServiceEvents = function () {
+        triggerServiceEvent = function () {
             var serviceEvent = this.serviceEvent;
             if (serviceEvent) {
-                this.app.trigger('service:' + serviceEvent);
-
+                this.app.appEventTrigger('service:' + serviceEvent);
             }
         },
 
@@ -81,7 +81,7 @@ define(['utils'], function (utils) {
                         if (validateService.call(that, that.validateAfterSend)) { //validate after send
                             parse.call(that, that.parseAfterSend);
                             that.promise.resolve(that.responseData);
-                            triggerServiceEvents.call(that);
+                            triggerServiceEvent.call(that);
                         }
                     }, 0);
                 },

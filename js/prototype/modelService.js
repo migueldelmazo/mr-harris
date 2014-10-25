@@ -58,6 +58,12 @@ define(['utils'], function (utils) {
             } else if (_.size(this._serviceInProgress) === 0) {
                 this.trigger('serviceInProgress', false);
             }
+        },
+
+        getServiceOptions = function () {
+            return {
+                app: this.app
+            };
         };
 
     //extend model class
@@ -80,7 +86,7 @@ define(['utils'], function (utils) {
             var that = this;
             service.inProgress = true;
             triggerServiceInProgress.call(this, service);
-            return utils.services.run(service)
+            return utils.services.run(service, getServiceOptions.call(this))
                 .done(function (responseData) {
                     onServiceResolve.call(that, service, responseData);
                 })

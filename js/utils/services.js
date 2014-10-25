@@ -145,8 +145,8 @@ define([], function () {
             utils = _utils; //store utils
         },
 
-        run: function (serviceDefinition) {
-            var serviceInstance = utils.classes.instance('service', serviceDefinition.service, serviceDefinition);
+        run: function (serviceDefinition, options) {
+            var serviceInstance = utils.classes.instance('service', serviceDefinition.service, serviceDefinition, options);
             storeService(serviceInstance);
             serviceInstance.initialize();
             return serviceInstance.getPromise();
