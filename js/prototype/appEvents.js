@@ -5,20 +5,20 @@ define(['utils'], function (utils) {
     _.extend(Marionette.Application.prototype, {
 
         _initAppEvents: function () {
-            this.vent = new Backbone.Wreqr.EventAggregator();
-            this.listenTo(this.vent, 'logout', this.logout);
+            this.channel = new Backbone.Wreqr.EventAggregator();
+            this.listenTo(this.channel, 'logout', this.logout);
         },
 
         appEventOn: function (eventName, callback, context) {
-            this.vent.on(eventName, callback, context);
+            this.channel.on(eventName, callback, context);
         },
 
         appEventOnce: function (eventName, callback, context) {
-            this.vent.once(eventName, callback, context);
+            this.channel.once(eventName, callback, context);
         },
 
         appEventTrigger: function (eventName, callback, context) {
-            this.vent.trigger(eventName, callback, context);
+            this.channel.trigger(eventName, callback, context);
         },
 
         //logout the application

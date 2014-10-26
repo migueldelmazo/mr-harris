@@ -27,7 +27,7 @@ define(['utils'], function (utils) {
             }, this);
             //app events
             _.each(this._appEvents, function (actions, eventName) {
-                this.listenTo(this.app.vent, eventName, onModelEvents.bind(this, actions));
+                this.listenTo(this.app.channel, eventName, onModelEvents.bind(this, actions));
             }, this);
         },
 
@@ -38,7 +38,7 @@ define(['utils'], function (utils) {
             }, this);
             //app events
             _.each(this._appEvents, function (actions, eventName) {
-                this.stopListening(this.app.vent);
+                this.stopListening(this.app.channel);
             }, this);
         },
 

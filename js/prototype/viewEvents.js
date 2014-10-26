@@ -18,7 +18,7 @@ define(['utils'], function (utils) {
 
         listenAppEvents = function () {
             _.each(this._appEvents, function (actions, eventName) {
-                this.listenTo(this.app.vent, eventName, onAppEvent.bind(this, actions));
+                this.listenTo(this.app.channel, eventName, onAppEvent.bind(this, actions));
             }, this);
         },
 

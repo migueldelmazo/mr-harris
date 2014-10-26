@@ -6,7 +6,7 @@ define(['utils'], function (utils) {
 
         appEventOn: function (event, callback) {
             callback = _.isFunction(callback) ? callback : this[callback];
-            this.listenTo(this.app.vent, event, callback, this);
+            this.listenTo(this.app.channel, event, callback, this);
         }
 
     });
