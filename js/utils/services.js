@@ -34,7 +34,7 @@ define([], function () {
                     !!resolve ? serviceInstance.resolve(responseData) : serviceInstance.reject(responseData);
                     services[index] = undefined; //set 'service' as undefined
                 }
-            });
+            }, this);
             services = _.compact(services); //remove undefined services
         },
 
@@ -55,7 +55,8 @@ define([], function () {
                 //check maintenance mode
                 onAjaxError.call(this, serviceOptions, {
                     type: 'warning',
-                    code: 'appInMaintenanceMode'
+                    code: 'appInMaintenanceMode',
+                    context: this
                 });
             } else {
                 //send ajax
@@ -70,12 +71,12 @@ define([], function () {
 
         onAjaxSuccess = function (serviceOptions, responseData) {
             setResponseDataInCachedService(serviceOptions, responseData);
-            resolveMatchingServices(serviceOptions, responseData, true);
+            resolveMatchingServices.call(this, serviceOptions, responseData, true);
         },
 
         onAjaxError = function (serviceOptions, responseError) {
             this.removeCachedService(serviceOptions);
-            resolveMatchingServices(serviceOptions, parseAjaxError(responseError), false);
+            resolveMatchingServices.call(this, serviceOptions, parseAjaxError(responseError), false);
         },
 
         parseAjaxError = function (responseError) {
@@ -155,7 +156,7 @@ define([], function () {
         callAjax: function (serviceOptions) {
             var cachedItem = findCachedService(serviceOptions);
             if (cachedItem.responseData) {
-                resolveMatchingServices(serviceOptions, cachedItem.responseData, true);
+                resolveMatchingServices.call(this, serviceOptions, cachedItem.responseData, true);
             } else if (!cachedItem.inProgress) {
                 storeServiceInCache(serviceOptions);
                 sendAjax.call(this, serviceOptions);

@@ -27,6 +27,7 @@ define([], function () {
             manageError('Error', error);
             //TODO: avisar a la aplicacion para que haga lo que tenga que hacer
             //TODO: pensar en como gestionar reportes y estadisticas de la aplicacion
+            //TODO: bloquear la aplicacion
         },
 
         throwWarning: function (error) {

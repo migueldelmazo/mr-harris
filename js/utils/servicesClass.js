@@ -59,6 +59,20 @@ define(['utils'], function (utils) {
             }
         },
 
+        throwWarning = function (responseError) {
+            utils.errors.throwWarning({
+                lib: 'serviceClass',
+                method: 'reject',
+                data: this.data,
+                method: this.method,
+                params: this.params,
+                url: this.url,
+                type: this.type,
+                code: responseError.code,
+                msg: responseError.msg
+            });
+        },
+
         //extend service class
         extendPrototype = function (serviceClass) {
             _.extend(serviceClass.prototype, {
@@ -69,7 +83,10 @@ define(['utils'], function (utils) {
                             parse.call(this, this.parseBeforeSend); //parse before send
                             utils.services.callAjax(this.getServiceOptions()); //send ajax call
                         } else {
-                            this.reject(); //invalid params, TODO: gestionar errores
+                            this.reject({ //invalid params
+                                type: 'error',
+                                code: 'serviceNotValidateBeforeSend'
+                            });
                         }
                     }
                 },
@@ -82,6 +99,11 @@ define(['utils'], function (utils) {
                             parse.call(that, that.parseAfterSend);
                             that.promise.resolve(that.responseData);
                             triggerServiceEvent.call(that);
+                        } else {
+                            that.reject({ //invalid params
+                                type: 'error',
+                                code: 'serviceNotValidateAfterSend'
+                            });
                         }
                     }, 0);
                 },
@@ -92,6 +114,7 @@ define(['utils'], function (utils) {
                         that.responseError = responseError;
                         parse.call(that, that.parseErrorAfterSend);
                         that.promise.reject(that.responseError);
+                        throwWarning.call(that, responseError);
                     }, 0);
                 },
 
