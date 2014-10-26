@@ -49,7 +49,8 @@ define(['utils'], function (utils) {
                 describe(this.name, function () {
                     it(action.name, function () {
                         if (action.waitsFor) {
-                            waitsFor(action.waitsFor.bind(this.test), 'WaitsFor is not resolved', 100);
+                            waitsFor(action.waitsFor.bind(this.test), 'WaitsFor is not resolved',
+                                utils.config.get('tests.waitsForTime', 100));
                             runs(action.test.bind(this.test));
                         } else {
                             action.test.call(this.test);

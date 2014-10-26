@@ -155,7 +155,7 @@ define([], function () {
         callAjax: function (serviceOptions) {
             var cachedItem = findCachedService(serviceOptions);
             if (cachedItem.responseData) {
-                resolveMatchingServices(serviceOptions, cachedItem.responseData);
+                resolveMatchingServices(serviceOptions, cachedItem.responseData, true);
             } else if (!cachedItem.inProgress) {
                 storeServiceInCache(serviceOptions);
                 sendAjax.call(this, serviceOptions);

@@ -18,7 +18,7 @@ define(['utils'], function (utils) {
 
         runAction: function (action) {
             var methodArgs = utils.sliceArguments(arguments, 1),
-                fooArgs = [this, action.action, undefined, action];
+                fooArgs = [this, action.action, undefined, action, getValue.call(this, action)];
             utils.foo.apply(this, fooArgs.concat(methodArgs));
         },
 

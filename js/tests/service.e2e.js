@@ -12,26 +12,45 @@ define(['utils'], function (utils) {
                 name: 'Simple service call',
                 do: function () {
                     utils.services.removeCachedService();
+                    this.findModel('serviceView').clear();
                     this.find$El('serviceView', '[js=simple-service]').click();
                 },
                 waitsFor: function () {
-                    return this.findModel('serviceView').servicesInProgressCounter() === 0;
+                    return this.findModel('serviceView').servicesInProgressCounter() === 10;
                 },
                 test: function () {
-                    expect(this.findModel('serviceView').get('serviceTestOne').foo).toBe('foo');
-                    expect(this.findModel('serviceView').getServiceData('serviceTestOne', 'foo')).toBe('foo');
+                    expect(this.findModel('serviceView').get('simpleService').foo).toBe('foo');
+                    expect(this.findModel('serviceView').getServiceData('simpleService', 'foo')).toBe('foo');
                 }
             },
             {
-                name: 'Double service call, only one service in cache',
+                name: 'Double serial service call, only one service in cache',
                 do: function () {
                     utils.services.removeCachedService();
-                    this.find$El('serviceView', '[js=double-service]').click();
+                    this.findModel('serviceView').clear();
+                    this.find$El('serviceView', '[js=double-serial-service]').click();
                 },
                 waitsFor: function () {
                     return this.findModel('serviceView').servicesInProgressCounter() === 0;
                 },
                 test: function () {
+                    expect(this.findModel('serviceView').get('doubleSerialService').foo).toBe('foo');
+                    expect(this.findModel('serviceView').get('doubleSerialServiceRepeated').foo).toBe('foo');
+                    expect(_.size(utils.services.getCachedService())).toBe(1);
+                }
+            },
+            {
+                name: 'Double parallel service call, only one service in cache',
+                do: function () {
+                    utils.services.removeCachedService();
+                    this.find$El('serviceView', '[js=double-parallel-service]').click();
+                },
+                waitsFor: function () {
+                    return this.findModel('serviceView').servicesInProgressCounter() === 0;
+                },
+                test: function () {
+                    expect(this.findModel('serviceView').get('doubleParallelService').foo).toBe('foo');
+                    expect(this.findModel('serviceView').get('doubleParallelServiceRepeated').foo).toBe('foo');
                     expect(_.size(utils.services.getCachedService())).toBe(1);
                 }
             },
@@ -46,10 +65,9 @@ define(['utils'], function (utils) {
                 },
                 test: function () {
                     expect(utils.services.getCachedService()[0].params.code).toBe(2);
-                    expect(this.findModel('serviceView').getServiceData('serviceTestOneValidateAndParse', 'foo')).toBe('foo1');
+                    expect(this.findModel('serviceView').getServiceData('validateAndParseService', 'foo')).toBe('foo1');
                 }
             }
         ]
     };
 });
-//TODO: testar validates y parseos, que se cacheen las llamadas, llamadas simultáneas

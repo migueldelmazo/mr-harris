@@ -2,7 +2,8 @@ define([], function () {
 
     return {
         simpleService: 'Simple service',
-        doubleService: 'Double service',
+        doubleSerialService: 'Double serial service',
+        doubleParallelService: 'Double parallel service',
         validateAndParseService: 'Validate and parse service'
     };
 

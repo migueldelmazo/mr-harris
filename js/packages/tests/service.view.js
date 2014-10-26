@@ -18,14 +18,17 @@ define([
 
         _domEvents: {
             'click [js="simple-service"]': [
-                { action: 'runModelMethod', method: 'callServiceById', value: 'serviceTestOne' }
+                { action: 'runModelMethod', method: 'callServiceById', value: 'simpleService' }
             ],
-            'click [js="double-service"]': [
-                { action: 'runModelMethod', method: 'callServiceById', value: 'serviceTestOne' },
-                { action: 'runModelMethod', method: 'callServiceById', value: 'serviceTestOne' }
+            'click [js="double-serial-service"]': [
+                { action: 'runModelMethod', method: 'callServiceById', value: 'doubleSerialService' },
+            ],
+            'click [js="double-parallel-service"]': [
+                { action: 'runModelMethod', method: 'callServiceById', value: 'doubleParallelService' },
+                { action: 'runModelMethod', method: 'callServiceById', value: 'doubleParallelServiceRepeated' }
             ],
             'click [js="validate-and-parse-service"]': [
-                { action: 'runModelMethod', method: 'callServiceById', value: 'serviceTestOneValidateAndParse' }
+                { action: 'runModelMethod', method: 'callServiceById', value: 'validateAndParseService' }
             ]
         }
 

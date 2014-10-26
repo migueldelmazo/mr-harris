@@ -4,35 +4,57 @@ define([], function () {
 
     return {
 
-        //getServiceTestOne
+        //simpleService
 
-        getServiceTestOne: function () {
+        simpleService: function () {
             this.url = url;
         },
 
-        //getServiceTestOne
+        //doubleSerialService
 
-        getServiceTestOneValidateAndParse: function () {
+        doubleSerialService: function () {
             this.url = url;
-            this.validateBeforeSend = 'getServiceTestOneValidateAndParseValidateBeforeSend';
-            this.parseBeforeSend = 'getServiceTestOneValidateAndParseParseBeforeSend';
-            this.validateAfterSend = 'getServiceTestOneValidateAndParseValidateAfterSend';
-            this.parseAfterSend = 'getServiceTestOneValidateAndParseParseAfterSend';
+            this.serviceEvent = 'doubleSerialService';
         },
 
-        getServiceTestOneValidateAndParseValidateBeforeSend: function () {
+        doubleSerialServiceRepeated: function () {
+            this.url = url;
+        },
+
+
+        //doubleParallelService
+
+        doubleParallelService: function () {
+            this.url = url;
+        },
+
+        doubleParallelServiceRepeated: function () {
+            this.url = url;
+        },
+
+        //validateAndParseService
+
+        validateAndParseService: function () {
+            this.url = url;
+            this.validateBeforeSend = 'validateAndParseServiceValidateBeforeSend';
+            this.parseBeforeSend = 'validateAndParseServiceParseBeforeSend';
+            this.validateAfterSend = 'validateAndParseServiceValidateAfterSend';
+            this.parseAfterSend = 'validateAndParseServiceParseAfterSend';
+        },
+
+        validateAndParseServiceValidateBeforeSend: function () {
             return this.params.code === 1;
         },
 
-        getServiceTestOneValidateAndParseParseBeforeSend: function () {
+        validateAndParseServiceParseBeforeSend: function () {
             this.params.code += 1;
         },
 
-        getServiceTestOneValidateAndParseValidateAfterSend: function () {
+        validateAndParseServiceValidateAfterSend: function () {
             return this.responseData.foo === 'foo';
         },
 
-        getServiceTestOneValidateAndParseParseAfterSend: function () {
+        validateAndParseServiceParseAfterSend: function () {
             this.responseData.foo += 1;
         }
 

@@ -9,39 +9,49 @@ define([
 
         _services: [
             {
-                id: 'serviceTestOne',
+                id: 'simpleService',
                 service: serviceTestOne,
-                method: 'getServiceTestOne',
-                setModelAttr: 'serviceTestOne'
+                method: 'simpleService',
+                setModelAttr: 'simpleService'
             },
             {
-                id: 'serviceTestOneValidateAndParse',
+                id: 'doubleSerialService',
                 service: serviceTestOne,
-                method: 'getServiceTestOneValidateAndParse',
+                method: 'doubleSerialService',
+                setModelAttr: 'doubleSerialService'
+            },
+            {
+                id: 'doubleSerialServiceRepeated',
+                service: serviceTestOne,
+                method: 'doubleSerialServiceRepeated',
+                setModelAttr: 'doubleSerialServiceRepeated'
+            },
+            {
+                id: 'doubleParallelService',
+                service: serviceTestOne,
+                method: 'doubleParallelService',
+                setModelAttr: 'doubleParallelService'
+            },
+            {
+                id: 'doubleParallelServiceRepeated',
+                service: serviceTestOne,
+                method: 'doubleParallelServiceRepeated',
+                setModelAttr: 'doubleParallelServiceRepeated'
+            },
+            {
+                id: 'validateAndParseService',
+                service: serviceTestOne,
+                method: 'validateAndParseService',
                 params: { code: 1 }
             }
         ],
 
-        _modelEvents: { //model events actions
-            'serviceInProgress:serviceTestOne': [
-                { action: 'runModelMethod', method: 'onServiceProgressProducts' }
-            ],
-            'serviceInProgress': [
-                { action: 'runModelMethod', method: 'onServiceProgress' }
+        _appEvents: {
+            'service:doubleSerialService': [
+                { action: 'runModelMethod', method: 'callServiceById', value: 'doubleSerialServiceRepeated' }
             ]
-        },
-
-        onServiceProgressProducts: function (state) {
-            //console.debug('onServiceProgressProducts:', state);
-        },
-
-        onServiceProgress: function (state) {
-            //console.debug('onServiceProgress:', state);
-        },
-
-        submitSimpleService: function () {
-            this.callServiceById('serviceTestOne');
         }
+
     };
 
 });
