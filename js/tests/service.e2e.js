@@ -16,7 +16,7 @@ define(['utils'], function (utils) {
                     this.find$El('serviceView', '[js=simple-service]').click();
                 },
                 waitsFor: function () {
-                    return this.findModel('serviceView').servicesInProgressCounter() === 10;
+                    return this.findModel('serviceView').servicesInProgressCounter() === 0;
                 },
                 test: function () {
                     expect(this.findModel('serviceView').get('simpleService').foo).toBe('foo');
