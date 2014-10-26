@@ -1,6 +1,6 @@
 define(['utils'], function (utils) {
 
-    var //dom events
+    var //_listenEvents helpers
 
         listenDomEvents = function () {
             var events = {};
@@ -16,8 +16,6 @@ define(['utils'], function (utils) {
             this.runActions(actions, ev);
         },
 
-        //app events
-
         listenAppEvents = function () {
             _.each(this._appEvents, function (actions, eventName) {
                 this.listenTo(this.app.vent, eventName, onAppEvent.bind(this, actions));
@@ -32,8 +30,7 @@ define(['utils'], function (utils) {
 
     _.extend(Backbone.View.prototype, {
 
-        //extend this.events with all event types
-        _initEvents: function (options) {
+        _listenEvents: function (options) {
             listenDomEvents.call(this);
             listenAppEvents.call(this);
         }

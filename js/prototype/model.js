@@ -18,19 +18,30 @@ define(['utils'], function (utils) {
             this.defaults = utils.storage.appInstanceGet('model:' + options.viewName + ':' +this._name) || this._defaults || {};
         },
 
-        initAppEvents = function () {
-            _.each(this._appEvents, function (actions, eventName) {
-                this.app.vent.on(eventName, onModelEvents.bind(this, actions));
-            }, this);
-        },
+        //events
 
-        initModelEvents = function () {
+        listenEvents = function () {
+            //model events
             _.each(this._modelEvents, function (actions, eventName) {
-                this.on(eventName, onModelEvents.bind(this, actions));
+                this.listenTo(this, eventName, onModelEvents.bind(this, actions));
+            }, this);
+            //app events
+            _.each(this._appEvents, function (actions, eventName) {
+                this.listenTo(this.app.vent, eventName, onModelEvents.bind(this, actions));
             }, this);
         },
 
-        //model events listener
+        stopListeningEvents = function () {
+            //model events
+            _.each(this._appEvents, function (actions, eventName) {
+                this.stopListening(this);
+            }, this);
+            //app events
+            _.each(this._appEvents, function (actions, eventName) {
+                this.stopListening(this.app.vent);
+            }, this);
+        },
+
         onModelEvents = function () {
             this.runActions.apply(this, utils.sliceArguments(arguments));
         },
@@ -45,10 +56,14 @@ define(['utils'], function (utils) {
             if (this instanceof Backbone.Model) {
                 initOptions.call(this, options);
                 constructorModel.apply(this, arguments);
-                initAppEvents.call(this);
-                initModelEvents.call(this);
+                listenEvents.call(this);
                 utils.foo(this, 'initServices');
             }
+        },
+
+        close: function () {
+            stopListeningEvents.call(this);
+            this.destroy();
         }
 
     });

@@ -23,7 +23,7 @@ define(['utils'], function (utils) {
                 initOptions.call(this, options);
                 utils.foo(this, '_initRegions');
                 utils.foo(this, '_initModel');
-                utils.foo(this, '_initEvents');
+                utils.foo(this, '_listenEvents');
                 this._constructorExecuted = true;
             }
         },

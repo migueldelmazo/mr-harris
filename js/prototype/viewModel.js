@@ -42,14 +42,20 @@ define(['utils'], function (utils) {
 
         //manage model events to view
 
-        initModelEvents = function () {
-            _.each(this._modelEvents, function (actions, ev) {
-                this._modelInstance.on(ev, onModelEvents.bind(this, actions, ev));
+        listenModelEvents = function () {
+            _.each(this._modelEvents, function (actions, eventName) {
+                this.listenTo(this._modelInstance, eventName, onModelEvents.bind(this, actions, eventName));
             }, this)
         },
 
         onModelEvents = function (actions) {
             this.runActions(actions);
+        },
+
+        //destroyModel helpers
+
+        storeModelInAppInstance = function (modelInstance) {
+            utils.storage.appInstanceSet('model:' + this._name + ':' + modelInstance._name, modelInstance.toJSON());
         };
 
     //extend view class
@@ -61,14 +67,15 @@ define(['utils'], function (utils) {
                 this._modelOptions = _.extend({}, this._modelOptions, { app: this.app });
                 this._modelInstance = utils.classes.instance('model', this._model.model, {}, getOptions.call(this));
                 setBindings.call(this);
-                initModelEvents.call(this);
+                listenModelEvents.call(this);
             }
         },
 
-        onDestroyStoreModel: function () {
+        _destroyModel: function () {
             var modelInstance = this._modelInstance;
             if (modelInstance) {
-                utils.storage.appInstanceSet('model:' + this._name + ':' + modelInstance._name, modelInstance.toJSON());
+                storeModelInAppInstance.call(this, modelInstance);
+                modelInstance.close();
             }
         }
 

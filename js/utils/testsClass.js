@@ -113,11 +113,11 @@ define(['utils'], function (utils) {
         //test constructor
         constructor = function () {
             this.app = utils.config.get('app');
-            initEvents.call(this);
+            listenEvents.call(this);
         },
 
-        //on listen events run test for zombie tests
-        initEvents = function () {
+        //listen events to run test for zombie tests
+        listenEvents = function () {
             _.each(this.events, function (ev) {
                 this.app.appEventOn(ev, this.runTest, this);
             }, this);

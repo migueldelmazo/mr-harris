@@ -16,7 +16,7 @@ define(['utils'], function (utils) {
         },
 
         onDestroy: function () {
-            utils.foo(this, 'onDestroyStoreModel');
+            utils.foo(this, '_destroyModel');
         }
 
     });

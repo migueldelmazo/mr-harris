@@ -5,7 +5,7 @@ define([
 
     return {
 
-        _name: 'serviceModel', //model name
+        _name: 'serviceModel',
 
         _services: [
             {
@@ -53,5 +53,4 @@ define([
         }
 
     };
-
 });
