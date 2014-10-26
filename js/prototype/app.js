@@ -43,6 +43,10 @@ define(['utils'], function (utils) {
 
         getAppView: function () {
             return this.appView;
+        },
+
+        onError: function () {
+            this.appView.destroy();
         }
 
     });

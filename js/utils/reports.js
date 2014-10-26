@@ -10,6 +10,11 @@ define([], function () {
 
         print: function () {
             console.debug(reports);
+        },
+
+        send: function () {
+            //TODO: enviar reportes al API
+            console.debug('Sending reports...');
         }
 
     };
