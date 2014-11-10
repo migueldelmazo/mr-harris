@@ -12,6 +12,7 @@ define([
     'js/utils/string',
     'js/utils/tests',
     'js/utils/testsClass',
+    'js/utils/underscoreMixins',
     'marionette'
 ], function (
     classes,
