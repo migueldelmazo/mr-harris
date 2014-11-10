@@ -28,6 +28,9 @@
             },
             "marionette": {
                 "deps": ["backbone"]
+            },
+            "utils": {
+                "deps": ["underscore"]
             }
         }
     }

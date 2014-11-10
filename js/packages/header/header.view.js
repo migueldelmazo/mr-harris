@@ -7,5 +7,4 @@ define(['utils'], function (utils) {
         _template: '#header-view'
 
     };
-
 });

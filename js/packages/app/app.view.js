@@ -1,7 +1,4 @@
-define([
-    'utils',
-    'packages/header/header.view'
-], function (utils, headerView) {
+define(['utils'], function (utils) {
 
     return {
 
@@ -19,13 +16,9 @@ define([
 
         _defaultRegion: 'cont', //default region
 
-        _initialViewsInRegions: [ //show this views on init
-            {
-                id: 'header', //id of view
-                region: 'header',
-                view: headerView
-            }
-        ]
+        onRender: function () {
+            this.app.loadController('header', { regionName: 'header' });
+        }
 
     };
 });

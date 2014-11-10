@@ -1,11 +1,14 @@
 define([
     'utils',
     'packages/app/app.config',
-    'packages/app/app.router',
     'packages/app/app.view',
     'prototype/app',
+    'prototype/appController',
     'prototype/appEvents',
     'prototype/appNavigate',
+    'prototype/appRouter',
+    'prototype/controller',
+    'prototype/controllerActions',
     'prototype/model',
     'prototype/modelActions',
     'prototype/modelCommunication',
@@ -13,6 +16,7 @@ define([
     'prototype/modelSet',
     'prototype/modelValidations',
     'prototype/modelValidationsMethods',
+    'prototype/regionController',
     'prototype/view',
     'prototype/viewActions',
     'prototype/viewCommunication',
@@ -23,7 +27,7 @@ define([
     'prototype/viewOverwrite',
     'prototype/viewRegions',
     'prototype/viewUtils'
-], function (utils, appConfig, appRouter, appView) {
+], function (utils, appConfig, appView) {
 
     var //set config mixing app and user config
         setConfig = function (requireConfig) {
@@ -33,7 +37,7 @@ define([
 
         //create and store own classes
         createOwnClasses = function () {
-            utils.classes.create('appRouter', Marionette.AppRouter);
+            utils.classes.create('controller', Marionette.Controller);
             utils.classes.create('itemView', Marionette.ItemView);
             utils.classes.create('layout', Marionette.LayoutView);
             utils.classes.create('model', Backbone.Model);
@@ -43,8 +47,7 @@ define([
         initApp = function () {
             utils.tests.requireTestFiles().done(function () {
                 window.z_app = new Marionette.Application({
-                    appView: appView,
-                    appRouter: appRouter
+                    appView: appView
                 });
             });
         };
