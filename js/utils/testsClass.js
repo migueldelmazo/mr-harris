@@ -93,7 +93,7 @@ define(['utils'], function (utils) {
                     this.app.appEventOnce(action.waitEvent, runAction, this);
                 } else {
                     setTimeout(runAction.bind(this),
-                        action.wait || utils.config.get('tests.waitNextAction.defaultWaitingTime', 50));
+                        action.wait || utils.config.get('tests.waitNextAction.defaultWaitingTime', 100));
                 }
             }
         },
