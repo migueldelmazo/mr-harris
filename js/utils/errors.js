@@ -43,7 +43,7 @@ define([], function () {
             utils.config.get('app').onError();
             setTimeout(function () {
                 window.location.href = 'error.html';
-            }, 1000);
+            }, 30000);
         },
 
         throwWarning: function (error) {
